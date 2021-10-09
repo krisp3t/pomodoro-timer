@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Interval from "./Interval";
 import Button from "../UI/Button";
 
-const Session = () => {
+const Session = (props) => {
 	const [timestamp, setTimestamp] = useState(0);
 	const [startButtonDisabled, setStartButtonDisabled] = useState(false);
 	const pomodoroInterval = useRef();
@@ -18,17 +18,28 @@ const Session = () => {
 			1000
 		);
 		setStartButtonDisabled(true);
+		props.onAction({ type: "ADD", timestamp: timestamp, key: Date.now() });
 	};
 
 	const pausePomodoro = () => {
 		clearInterval(pomodoroInterval.current);
 		setStartButtonDisabled(false);
+		props.onAction({
+			type: "PAUSE",
+			timestamp: timestamp,
+			key: Date.now(),
+		});
 	};
 
 	const resetPomodoro = () => {
 		pausePomodoro();
 		setTimestamp(0);
 		setStartButtonDisabled(false);
+		props.onAction({
+			type: "RESET",
+			timestamp: timestamp,
+			key: Date.now(),
+		});
 	};
 
 	return (
