@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Interval from "./Interval";
+import Session from "./Session";
 
 function App() {
-	return <Interval />;
+	return <Session />;
 }
 
 export default App;
