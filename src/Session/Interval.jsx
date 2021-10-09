@@ -1,14 +1,22 @@
 import React from "react";
 
-const formatDate = (input) => input.toString().padStart(2, 0);
+export const formatTime = (input) => input.toString().padStart(2, 0);
+export const calculateMinSec = (timestamp) => {
+	const minutes = Math.floor(timestamp / 60);
+	const seconds = timestamp % 60;
+
+	return {
+		minutes: minutes,
+		seconds: seconds,
+	};
+};
 
 const Interval = (props) => {
-	let minutes = Math.floor(props.timestamp / 60);
-	let seconds = props.timestamp % 60;
+	const time = calculateMinSec(props.timestamp);
 
 	return (
 		<React.Fragment>
-			{formatDate(minutes)}:{formatDate(seconds)}
+			{formatTime(time.minutes)}:{formatTime(time.seconds)}
 		</React.Fragment>
 	);
 };

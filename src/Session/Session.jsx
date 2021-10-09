@@ -2,23 +2,34 @@ import React, { useState, useEffect, useRef } from "react";
 
 import Interval from "./Interval";
 import Button from "../UI/Button";
+import { calculateMinSec } from "./Interval";
 
 const Session = (props) => {
 	const [timestamp, setTimestamp] = useState(0);
 	const [startButtonDisabled, setStartButtonDisabled] = useState(false);
 	const pomodoroInterval = useRef();
+	const sessionStatus = useRef("working");
 
-	useEffect(() => {
-		return () => clearInterval(pomodoroInterval.current);
-	}, []);
-
-	const startPomodoro = () => {
+	const startPomodoro = (display = true) => {
+		clearInterval(pomodoroInterval.current);
 		pomodoroInterval.current = setInterval(
-			() => setTimestamp((seconds) => seconds + 1),
+			() =>
+				setTimestamp((seconds) =>
+					sessionStatus.current === "working"
+						? seconds + 1
+						: seconds - 1
+				),
 			1000
 		);
 		setStartButtonDisabled(true);
-		props.onAction({ type: "ADD", timestamp: timestamp, key: Date.now() });
+		if (display) {
+			props.onAction({
+				type: "START",
+				pomodoroTime: calculateMinSec(timestamp),
+				realTime: new Date().toTimeString().slice(0, 5),
+				key: "S" + Date.now(),
+			});
+		}
 	};
 
 	const pausePomodoro = () => {
@@ -26,8 +37,9 @@ const Session = (props) => {
 		setStartButtonDisabled(false);
 		props.onAction({
 			type: "PAUSE",
-			timestamp: timestamp,
-			key: Date.now(),
+			pomodoroTime: calculateMinSec(timestamp),
+			realTime: new Date().toTimeString().slice(0, 5),
+			key: "P" + Date.now(),
 		});
 	};
 
@@ -37,10 +49,48 @@ const Session = (props) => {
 		setStartButtonDisabled(false);
 		props.onAction({
 			type: "RESET",
-			timestamp: timestamp,
-			key: Date.now(),
+			pomodoroTime: calculateMinSec(timestamp),
+			realTime: new Date().toTimeString().slice(0, 5),
+			key: "R" + Date.now(),
 		});
 	};
+
+	useEffect(() => {
+		return () => clearInterval(pomodoroInterval.current);
+	}, []);
+
+	useEffect(() => {
+		if (timestamp === 1500) {
+			props.onAction({
+				type: "COMPLETE_WORKING",
+				pomodoroTime: {
+					minutes: "25",
+					seconds: "0",
+				},
+				realTime: new Date().toTimeString().slice(0, 5),
+				key: "C" + Date.now(),
+			});
+			sessionStatus.current = "break";
+			setTimestamp(300);
+			startPomodoro(false);
+		} else if (timestamp === 0 && sessionStatus.current === "break") {
+			alert("Your break is over");
+			props.onAction({
+				type: "COMPLETE_BREAK",
+				pomodoroTime: {
+					minutes: "5",
+					seconds: "0",
+				},
+				realTime: new Date().toTimeString().slice(0, 5),
+				key: "C" + Date.now(),
+			});
+			sessionStatus.current = "working";
+			setTimestamp(0);
+			startPomodoro(false);
+		}
+	}, [timestamp]);
+
+	console.log(sessionStatus.current);
 
 	return (
 		<div className="session">

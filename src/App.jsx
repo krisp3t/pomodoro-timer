@@ -3,12 +3,13 @@ import Session from "./Session/Session";
 import History from "./History/History";
 
 function App() {
-	const pomodoroActionsReducer = (pomodoroActions, buttonAction) => {
-		switch (buttonAction.type) {
-			case "ADD":
-				return [...pomodoroActions, buttonAction];
+	const pomodoroActionsReducer = (pomodoroActions, sessionAction) => {
+		switch (sessionAction.type) {
+			case "COMPLETE_WORKING":
+			case "COMPLETE_BREAK":
+			case "START":
 			case "PAUSE":
-				return [...pomodoroActions, buttonAction];
+				return [...pomodoroActions, sessionAction];
 			case "RESET":
 				return [];
 			default:
