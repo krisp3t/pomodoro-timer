@@ -40,6 +40,7 @@ const HistoryItem = (props) => {
 					action={props.action}
 				/>
 			);
+			break;
 		default:
 			break;
 	}
