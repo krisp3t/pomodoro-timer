@@ -7,78 +7,64 @@ import SessionObject from "./SessionObject";
 const SESSION_STATUS_WORKING = "working";
 const SESSION_STATUS_PAUSED = "paused";
 const SESSION_STATUS_BREAK = "break";
+const SESSION_STATUS_INITIAL = "initial";
+const POMODORO_DURATION = 1500;
+const BREAK_DURATION = 300;
 
 const Session = (props) => {
 	const [timestamp, setTimestamp] = useState(0);
-	const [buttonsDisabled, setButtonsDisabled] = useState({
-		start: false,
-		pause: true,
-	});
+	const [sessionStatus, setSessionStatus] = useState(SESSION_STATUS_INITIAL);
 	const pomodoroInterval = useRef();
-	const sessionStatus = useRef(SESSION_STATUS_WORKING);
 
-	const startPomodoro = (display = true) => {
-		clearInterval(pomodoroInterval.current);
-		pomodoroInterval.current = setInterval(
-			() =>
-				setTimestamp((seconds) =>
-					sessionStatus.current === SESSION_STATUS_WORKING
-						? seconds + 1
-						: seconds - 1
-				),
-			1000
-		);
-		setButtonsDisabled({
-			start: true,
-			pause: false,
-		});
-		if (display) {
-			const type =
-				sessionStatus.current === SESSION_STATUS_PAUSED
-					? "PAUSE_END"
-					: "START";
-			props.onAction(new SessionObject(type, timestamp));
-		}
-		sessionStatus.current = SESSION_STATUS_WORKING;
+	const startPomodoro = () => {
+		setSessionStatus(SESSION_STATUS_WORKING);
 	};
 
 	const pausePomodoro = () => {
-		clearInterval(pomodoroInterval.current);
-		sessionStatus.current = SESSION_STATUS_PAUSED;
-		setButtonsDisabled({
-			start: false,
-			pause: true,
-		});
-		props.onAction(new SessionObject("PAUSE_START", timestamp));
+		setSessionStatus(SESSION_STATUS_PAUSED);
 	};
 
 	const resetPomodoro = () => {
-		pausePomodoro();
+		setSessionStatus(SESSION_STATUS_PAUSED);
 		setTimestamp(0);
-		setButtonsDisabled({
-			start: false,
-			pause: true,
-		});
 		props.reset();
 	};
 
 	useEffect(() => {
-		if (timestamp === 1500) {
-			props.onAction(new SessionObject("WORKING_END", 1500));
-			sessionStatus.current = SESSION_STATUS_BREAK;
-			setTimestamp(300);
-			startPomodoro(false);
-		} else if (
-			timestamp === 0 &&
-			sessionStatus.current === SESSION_STATUS_BREAK
-		) {
-			alert("Your break is over");
+		if (timestamp === POMODORO_DURATION) {
+			props.onAction(new SessionObject("WORKING_END", POMODORO_DURATION));
+			setSessionStatus(SESSION_STATUS_BREAK);
+		} else if (timestamp === 0 && sessionStatus === SESSION_STATUS_BREAK) {
 			props.onAction(new SessionObject("BREAK_END", timestamp));
-			sessionStatus.current = SESSION_STATUS_WORKING;
-			setTimestamp(0);
-			startPomodoro(false);
+			setSessionStatus(SESSION_STATUS_WORKING);
 		}
 	}, [timestamp]);
+
+	useEffect(() => {
+		clearInterval(pomodoroInterval.current);
+		switch (sessionStatus) {
+			case SESSION_STATUS_WORKING:
+				setTimestamp(0);
+				pomodoroInterval.current = setInterval(
+					() => setTimestamp((seconds) => seconds + 1),
+					1000
+				);
+				props.onAction(new SessionObject("PAUSE_END", timestamp));
+				break;
+			case SESSION_STATUS_BREAK:
+				setTimestamp(BREAK_DURATION);
+				pomodoroInterval.current = setInterval(
+					() => setTimestamp((seconds) => seconds - 1),
+					1000
+				);
+				break;
+			case SESSION_STATUS_PAUSED:
+				props.onAction(new SessionObject("PAUSE_START", timestamp));
+				break;
+			default:
+				return;
+		}
+	}, [sessionStatus]);
 
 	/* Cleanup */
 	useEffect(() => {
@@ -94,12 +80,18 @@ const Session = (props) => {
 				<Button
 					text="Start"
 					onClick={startPomodoro}
-					disabled={buttonsDisabled.start}
+					disabled={
+						sessionStatus ===
+						(SESSION_STATUS_WORKING || SESSION_STATUS_BREAK)
+					}
 				/>
 				<Button
 					text="Pause"
-					disabled={buttonsDisabled.pause}
 					onClick={pausePomodoro}
+					disabled={
+						sessionStatus ===
+						(SESSION_STATUS_INITIAL || SESSION_STATUS_PAUSED)
+					}
 				/>
 				<Button text="Reset" onClick={resetPomodoro} />
 			</div>

@@ -5,12 +5,12 @@ import History from "./History/History";
 function App() {
 	const pomodoroActionsReducer = (pomodoroActions, sessionAction) => {
 		switch (sessionAction.type) {
-			case "COMPLETE_WORKING":
-			case "COMPLETE_BREAK":
 			case "START":
+			case "WORKING_END":
+			case "BREAK_END":
 			case "PAUSE_START":
 			case "PAUSE_END":
-				return [...pomodoroActions, sessionAction];
+				return [sessionAction, ...pomodoroActions];
 			case "RESET":
 				return [];
 			default:
