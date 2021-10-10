@@ -6,8 +6,8 @@ export const calculateMinSec = (timestamp) => {
 	const seconds = timestamp % 60;
 
 	return {
-		minutes: minutes,
-		seconds: seconds,
+		minutes: formatTime(minutes),
+		seconds: formatTime(seconds),
 	};
 };
 
