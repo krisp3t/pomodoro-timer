@@ -8,13 +8,20 @@ function App() {
 			case "COMPLETE_WORKING":
 			case "COMPLETE_BREAK":
 			case "START":
-			case "PAUSE":
+			case "PAUSE_START":
+			case "PAUSE_END":
 				return [...pomodoroActions, sessionAction];
 			case "RESET":
 				return [];
 			default:
 				throw new Error();
 		}
+	};
+
+	const resetActionsList = () => {
+		updatePomodoroActionItems({
+			type: "RESET",
+		});
 	};
 
 	const [pomodoroActionItems, updatePomodoroActionItems] = useReducer(
@@ -24,8 +31,11 @@ function App() {
 
 	return (
 		<React.Fragment>
-			<Session onAction={updatePomodoroActionItems} />
-			<History items={pomodoroActionItems} />
+			<Session
+				onAction={updatePomodoroActionItems}
+				reset={resetActionsList}
+			/>
+			<History items={pomodoroActionItems} clear={resetActionsList} />
 		</React.Fragment>
 	);
 }
