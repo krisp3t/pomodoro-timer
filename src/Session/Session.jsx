@@ -44,10 +44,9 @@ const Session = (props) => {
 		clearInterval(pomodoroInterval.current);
 		switch (sessionStatus) {
 			case SESSION_STATUS_WORKING:
-				setTimestamp(0);
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds + 1),
-					1000
+					5
 				);
 				props.onAction(new SessionObject("PAUSE_END", timestamp));
 				break;
@@ -55,11 +54,14 @@ const Session = (props) => {
 				setTimestamp(BREAK_DURATION);
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds - 1),
-					1000
+					5
 				);
 				break;
 			case SESSION_STATUS_PAUSED:
 				props.onAction(new SessionObject("PAUSE_START", timestamp));
+				break;
+			case SESSION_STATUS_INITIAL:
+				setTimestamp(0);
 				break;
 			default:
 				return;
@@ -81,16 +83,16 @@ const Session = (props) => {
 					text="Start"
 					onClick={startPomodoro}
 					disabled={
-						sessionStatus ===
-						(SESSION_STATUS_WORKING || SESSION_STATUS_BREAK)
+						sessionStatus === SESSION_STATUS_WORKING ||
+						sessionStatus === SESSION_STATUS_BREAK
 					}
 				/>
 				<Button
 					text="Pause"
 					onClick={pausePomodoro}
 					disabled={
-						sessionStatus ===
-						(SESSION_STATUS_INITIAL || SESSION_STATUS_PAUSED)
+						sessionStatus === SESSION_STATUS_PAUSED ||
+						sessionStatus === SESSION_STATUS_INITIAL
 					}
 				/>
 				<Button text="Reset" onClick={resetPomodoro} />
