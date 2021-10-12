@@ -4,10 +4,10 @@ import Interval from "./Interval";
 import Button from "../UI/Button";
 import SessionObject from "./SessionObject";
 
-const SESSION_STATUS_WORKING = "working";
-const SESSION_STATUS_PAUSED = "paused";
-const SESSION_STATUS_BREAK = "break";
-const SESSION_STATUS_INITIAL = "initial";
+const SESSION_STATUS_WORKING = { status: "working" };
+const SESSION_STATUS_PAUSED = { status: "paused" };
+const SESSION_STATUS_BREAK = { status: "break" };
+const SESSION_STATUS_INITIAL = { status: "initial" };
 const POMODORO_DURATION = 1500;
 const BREAK_DURATION = 300;
 
@@ -17,15 +17,22 @@ const Session = (props) => {
 	const pomodoroInterval = useRef();
 
 	const startPomodoro = () => {
+		if (sessionStatus.status === "paused") {
+			setSessionStatus(sessionStatus.beforePause);
+			return;
+		}
 		setSessionStatus(SESSION_STATUS_WORKING);
 	};
 
 	const pausePomodoro = () => {
-		setSessionStatus(SESSION_STATUS_PAUSED);
+		setSessionStatus({
+			...SESSION_STATUS_PAUSED,
+			beforePause: sessionStatus,
+		});
 	};
 
 	const resetPomodoro = () => {
-		setSessionStatus(SESSION_STATUS_PAUSED);
+		setSessionStatus(SESSION_STATUS_INITIAL);
 		setTimestamp(0);
 		props.reset();
 	};
@@ -33,6 +40,7 @@ const Session = (props) => {
 	useEffect(() => {
 		if (timestamp === POMODORO_DURATION) {
 			props.onAction(new SessionObject("WORKING_END", POMODORO_DURATION));
+			setTimestamp(BREAK_DURATION);
 			setSessionStatus(SESSION_STATUS_BREAK);
 		} else if (timestamp === 0 && sessionStatus === SESSION_STATUS_BREAK) {
 			props.onAction(new SessionObject("BREAK_END", timestamp));
@@ -51,7 +59,6 @@ const Session = (props) => {
 				props.onAction(new SessionObject("PAUSE_END", timestamp));
 				break;
 			case SESSION_STATUS_BREAK:
-				setTimestamp(BREAK_DURATION);
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds - 1),
 					5
@@ -83,16 +90,16 @@ const Session = (props) => {
 					text="Start"
 					onClick={startPomodoro}
 					disabled={
-						sessionStatus === SESSION_STATUS_WORKING ||
-						sessionStatus === SESSION_STATUS_BREAK
+						sessionStatus.status === SESSION_STATUS_WORKING ||
+						sessionStatus.status === SESSION_STATUS_BREAK
 					}
 				/>
 				<Button
 					text="Pause"
 					onClick={pausePomodoro}
 					disabled={
-						sessionStatus === SESSION_STATUS_PAUSED ||
-						sessionStatus === SESSION_STATUS_INITIAL
+						sessionStatus.status === SESSION_STATUS_PAUSED ||
+						sessionStatus.status === SESSION_STATUS_INITIAL
 					}
 				/>
 				<Button text="Reset" onClick={resetPomodoro} />
