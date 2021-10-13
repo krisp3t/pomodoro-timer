@@ -1,5 +1,13 @@
 import React, { useRef } from "react";
-import { Heading, Flex, Button, Input, useDisclosure } from "@chakra-ui/react";
+import {
+	Heading,
+	Flex,
+	Button,
+	Input,
+	Icon,
+	useDisclosure,
+	Box,
+} from "@chakra-ui/react";
 import {
 	Drawer,
 	DrawerBody,
@@ -10,6 +18,7 @@ import {
 	DrawerCloseButton,
 } from "@chakra-ui/react";
 import { VscSettingsGear } from "react-icons/vsc";
+import { GiTomato } from "react-icons/gi";
 
 const Navbar = (props) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -26,18 +35,35 @@ const Navbar = (props) => {
 			bg="gray.200"
 			{...props}
 		>
-			<Flex align="center" mr={5}>
-				<Heading as="h1" size="lg">
-					Pomodoro Timer
-				</Heading>
+			<Flex
+				align="flex-start"
+				justifyContent="center"
+				mr={5}
+				bgGradient="linear(to-l, #7928CA, red.500)"
+				bgClip="text"
+			>
+				<Icon as={GiTomato} w={10} h={10} mr={3} color="red.500" />
+				<Box>
+					<Heading
+						as="h1"
+						size="lg"
+						lineHeight="1.5"
+						display="inline-block"
+						verticalAlign="-15px"
+						h={10}
+					>
+						Pomodoro Timer
+					</Heading>
+				</Box>
 			</Flex>
 
 			<Button
 				onClick={handleToggle}
 				leftIcon={<VscSettingsGear />}
-				variant="outline"
+				variant="solid"
 				colorScheme="black"
 				ref={btnRef}
+				fontWeight="500"
 			>
 				Settings
 			</Button>
@@ -61,7 +87,7 @@ const Navbar = (props) => {
 						<Button variant="outline" mr={3} onClick={onClose}>
 							Cancel
 						</Button>
-						<Button colorScheme="blue">Save</Button>
+						<Button colorScheme="black">Save</Button>
 					</DrawerFooter>
 				</DrawerContent>
 			</Drawer>

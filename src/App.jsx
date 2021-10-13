@@ -1,9 +1,9 @@
 import React, { useReducer } from "react";
 import { Container, VStack } from "@chakra-ui/layout";
 
+import Navbar from "./UI/Navbar";
 import Session from "./Session/Session";
 import History from "./History/History";
-import Navbar from "./UI/Navbar";
 
 function App() {
 	const pomodoroActionsReducer = (pomodoroActions, sessionAction) => {

@@ -16,7 +16,11 @@ const History = (props) => {
 		.map((action) => <HistoryItem key={action.key} action={action} />);
 	return (
 		<Box>
-			<Button onClick={props.clear} leftIcon={<VscClearAll />}>
+			<Button
+				colorScheme="black"
+				onClick={props.clear}
+				leftIcon={<VscClearAll />}
+			>
 				Clear
 			</Button>
 			<Box>{actionItems}</Box>
