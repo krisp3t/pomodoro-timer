@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Button, ButtonGroup } from "@chakra-ui/button";
+import { Box } from "@chakra-ui/layout";
 
 import Interval from "./Interval";
-import Button from "../UI/Button";
 import SessionObject from "./SessionObject";
 
 const SESSION_STATUS_WORKING = { status: "working" };
@@ -81,30 +82,36 @@ const Session = (props) => {
 	}, []);
 
 	return (
-		<div className="session">
-			<div className="interval">
+		<React.Fragment>
+			<Box>
 				<Interval timestamp={timestamp} />
-			</div>
-			<div className="button-list">
+			</Box>
+			<ButtonGroup spacing="6">
 				<Button
-					text="Start"
+					colorScheme="green"
 					onClick={startPomodoro}
-					disabled={
-						sessionStatus.status === SESSION_STATUS_WORKING ||
-						sessionStatus.status === SESSION_STATUS_BREAK
-					}
-				/>
+					isDisabled={[
+						SESSION_STATUS_WORKING.status,
+						SESSION_STATUS_BREAK.status,
+					].includes(sessionStatus.status)}
+				>
+					Start
+				</Button>
 				<Button
-					text="Pause"
+					colorScheme="red"
 					onClick={pausePomodoro}
-					disabled={
-						sessionStatus.status === SESSION_STATUS_PAUSED ||
-						sessionStatus.status === SESSION_STATUS_INITIAL
-					}
-				/>
-				<Button text="Reset" onClick={resetPomodoro} />
-			</div>
-		</div>
+					isDisabled={[
+						SESSION_STATUS_PAUSED.status,
+						SESSION_STATUS_INITIAL.status,
+					].includes(sessionStatus.status)}
+				>
+					Pause
+				</Button>
+				<Button colorScheme="blue" text="Reset" onClick={resetPomodoro}>
+					Reset
+				</Button>
+			</ButtonGroup>
+		</React.Fragment>
 	);
 };
 

@@ -1,6 +1,6 @@
 import React from "react";
+import { Box } from "@chakra-ui/layout";
 
-import styles from "./HistoryItem.module.css";
 import { calculateMinSec } from "../Session/Interval";
 
 const ActionCompleted = (props) => {
@@ -44,7 +44,7 @@ const HistoryItem = (props) => {
 		default:
 			break;
 	}
-	return <div className={styles["history-item"]}>{content}</div>;
+	return <Box>{content}</Box>;
 };
 
 export default HistoryItem;

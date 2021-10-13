@@ -1,4 +1,6 @@
 import React, { useReducer } from "react";
+import { Container, VStack } from "@chakra-ui/layout";
+
 import Session from "./Session/Session";
 import History from "./History/History";
 
@@ -40,13 +42,15 @@ function App() {
 	);
 
 	return (
-		<React.Fragment>
-			<Session
-				onAction={updatePomodoroActionItems}
-				reset={resetActionsList}
-			/>
-			<History items={pomodoroActionItems} clear={resetActionsList} />
-		</React.Fragment>
+		<Container centerContent p="6">
+			<VStack>
+				<Session
+					onAction={updatePomodoroActionItems}
+					reset={resetActionsList}
+				/>
+				<History items={pomodoroActionItems} clear={resetActionsList} />
+			</VStack>
+		</Container>
 	);
 }
 

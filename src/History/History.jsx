@@ -1,4 +1,7 @@
 import React from "react";
+import { Box } from "@chakra-ui/layout";
+import { Button } from "@chakra-ui/button";
+
 import HistoryItem from "./HistoryItem";
 
 const History = (props) => {
@@ -11,10 +14,10 @@ const History = (props) => {
 		})
 		.map((action) => <HistoryItem key={action.key} action={action} />);
 	return (
-		<div className="history">
-			<button onClick={props.clear}>Clear</button>
+		<Box>
+			<Button onClick={props.clear}>Clear</Button>
 			{actionItems}
-		</div>
+		</Box>
 	);
 };
 
