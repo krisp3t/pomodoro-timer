@@ -3,6 +3,7 @@ import { Container, VStack } from "@chakra-ui/layout";
 
 import Session from "./Session/Session";
 import History from "./History/History";
+import Navbar from "./UI/Navbar";
 
 function App() {
 	const pomodoroActionsReducer = (pomodoroActions, sessionAction) => {
@@ -42,15 +43,21 @@ function App() {
 	);
 
 	return (
-		<Container centerContent p="6">
-			<VStack>
-				<Session
-					onAction={updatePomodoroActionItems}
-					reset={resetActionsList}
-				/>
-				<History items={pomodoroActionItems} clear={resetActionsList} />
-			</VStack>
-		</Container>
+		<React.Fragment>
+			<Navbar />
+			<Container centerContent p="6">
+				<VStack>
+					<Session
+						onAction={updatePomodoroActionItems}
+						reset={resetActionsList}
+					/>
+					<History
+						items={pomodoroActionItems}
+						clear={resetActionsList}
+					/>
+				</VStack>
+			</Container>
+		</React.Fragment>
 	);
 }
 
