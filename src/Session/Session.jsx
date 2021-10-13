@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button, ButtonGroup } from "@chakra-ui/button";
 import { Box } from "@chakra-ui/layout";
+import { VscDebugStart, VscDebugPause, VscDebugRestart } from "react-icons/vsc";
 
 import Interval from "./Interval";
 import SessionObject from "./SessionObject";
@@ -94,6 +95,7 @@ const Session = (props) => {
 						SESSION_STATUS_WORKING.status,
 						SESSION_STATUS_BREAK.status,
 					].includes(sessionStatus.status)}
+					leftIcon={<VscDebugStart />}
 				>
 					Start
 				</Button>
@@ -104,10 +106,16 @@ const Session = (props) => {
 						SESSION_STATUS_PAUSED.status,
 						SESSION_STATUS_INITIAL.status,
 					].includes(sessionStatus.status)}
+					leftIcon={<VscDebugPause />}
 				>
 					Pause
 				</Button>
-				<Button colorScheme="blue" text="Reset" onClick={resetPomodoro}>
+				<Button
+					colorScheme="blue"
+					text="Reset"
+					onClick={resetPomodoro}
+					leftIcon={<VscDebugRestart />}
+				>
 					Reset
 				</Button>
 			</ButtonGroup>

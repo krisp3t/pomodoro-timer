@@ -1,6 +1,7 @@
 import React from "react";
 import { Box } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
+import { VscClearAll } from "react-icons/vsc";
 
 import HistoryItem from "./HistoryItem";
 
@@ -15,8 +16,10 @@ const History = (props) => {
 		.map((action) => <HistoryItem key={action.key} action={action} />);
 	return (
 		<Box>
-			<Button onClick={props.clear}>Clear</Button>
-			{actionItems}
+			<Button onClick={props.clear} leftIcon={<VscClearAll />}>
+				Clear
+			</Button>
+			<Box>{actionItems}</Box>
 		</Box>
 	);
 };
