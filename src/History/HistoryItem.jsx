@@ -82,7 +82,7 @@ const HistoryItem = (props) => {
 		<Box
 			m="auto"
 			w="50%"
-			mb={4}
+			mb={5}
 			px={4}
 			py={2}
 			borderWidth="1px"

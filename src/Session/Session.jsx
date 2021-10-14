@@ -12,8 +12,8 @@ const SESSION_STATUS_WORKING = { status: "working" };
 const SESSION_STATUS_PAUSED = { status: "paused" };
 const SESSION_STATUS_BREAK = { status: "break" };
 const SESSION_STATUS_INITIAL = { status: "initial" };
-const POMODORO_DURATION = 15;
-const BREAK_DURATION = 3;
+const POMODORO_DURATION = 1500;
+const BREAK_DURATION = 300;
 
 const Session = (props) => {
 	const [timestamp, setTimestamp] = useState(0);
@@ -59,14 +59,14 @@ const Session = (props) => {
 			case SESSION_STATUS_WORKING:
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds + 1),
-					500
+					5
 				);
 				props.onAction(new SessionObject("PAUSE_END", timestamp));
 				break;
 			case SESSION_STATUS_BREAK:
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds - 1),
-					500
+					5
 				);
 				break;
 			case SESSION_STATUS_PAUSED:
@@ -121,7 +121,7 @@ const Session = (props) => {
 					Pause
 				</Button>
 				<Button
-					colorScheme="blue"
+					colorScheme="gray"
 					text="Reset"
 					onClick={resetPomodoro}
 					leftIcon={<VscDebugRestart />}

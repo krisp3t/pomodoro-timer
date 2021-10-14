@@ -13,7 +13,7 @@ const History = (props) => {
 			);
 		})
 		.filter((action) => {
-			return action.type !== "PAUSE_END" || action.pauseLength > 1;
+			return action.type !== "PAUSE_END" || action.pauseLength > 30;
 		})
 		.map((action) => <HistoryItem key={action.key} action={action} />);
 
@@ -22,7 +22,7 @@ const History = (props) => {
 			<Box textAlign="right" mb={5}>
 				<Button
 					size="sm"
-					colorScheme="black"
+					colorScheme="gray"
 					onClick={props.clear}
 					leftIcon={<VscClearAll />}
 				>

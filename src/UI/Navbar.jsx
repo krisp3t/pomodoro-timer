@@ -3,10 +3,18 @@ import {
 	Heading,
 	Flex,
 	Button,
-	Input,
 	Icon,
-	useDisclosure,
 	Box,
+	Switch,
+	Text,
+	useDisclosure,
+} from "@chakra-ui/react";
+import {
+	NumberInput,
+	NumberInputField,
+	NumberInputStepper,
+	NumberIncrementStepper,
+	NumberDecrementStepper,
 } from "@chakra-ui/react";
 import {
 	Drawer,
@@ -57,17 +65,20 @@ const Navbar = (props) => {
 				</Box>
 			</Flex>
 
-			<Button
-				onClick={handleToggle}
-				leftIcon={<VscSettingsGear />}
-				variant="solid"
-				colorScheme="black"
-				ref={btnRef}
-				fontWeight="500"
-				shadow="md"
-			>
-				Settings
-			</Button>
+			<Box>
+				<Switch id="colorMode" mr={10} />
+				<Button
+					onClick={handleToggle}
+					leftIcon={<VscSettingsGear />}
+					variant="solid"
+					colorScheme="black"
+					ref={btnRef}
+					fontWeight="500"
+					shadow="md"
+				>
+					Settings
+				</Button>
+			</Box>
 
 			<Drawer
 				isOpen={isOpen}
@@ -81,7 +92,28 @@ const Navbar = (props) => {
 					<DrawerHeader>Configure Pomodoro</DrawerHeader>
 
 					<DrawerBody>
-						<Input placeholder="Type here..." />
+						<Text>Pomodoro length (in minutes)</Text>
+						<NumberInput>
+							<NumberInputField />
+							<NumberInputStepper>
+								<NumberIncrementStepper />
+								<NumberDecrementStepper />
+							</NumberInputStepper>
+						</NumberInput>
+						<Text>Break length (in minutes)</Text>
+						<NumberInput>
+							<NumberInputField />
+							<NumberInputStepper>
+								<NumberIncrementStepper />
+								<NumberDecrementStepper />
+							</NumberInputStepper>
+						</NumberInput>
+						<Text>Display statistics</Text>
+						<Switch id="isStatistics" />
+						<Text>Display log</Text>
+						<Switch id="isLog" />
+						<Text>Display notifications</Text>
+						<Switch id="isNotifications" />
 					</DrawerBody>
 
 					<DrawerFooter>
