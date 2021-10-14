@@ -45,7 +45,7 @@ function App() {
 	return (
 		<React.Fragment>
 			<Navbar />
-			<Container maxW="container.lg" centerContent p="6">
+			<Container maxW="container.lg" centerContent p={6}>
 				<VStack w="100%">
 					<Session
 						onAction={updatePomodoroActionItems}

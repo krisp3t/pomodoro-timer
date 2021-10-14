@@ -103,6 +103,7 @@ const Session = (props) => {
 						SESSION_STATUS_BREAK.status,
 					].includes(sessionStatus.status)}
 					leftIcon={<VscDebugStart />}
+					shadow="md"
 				>
 					Start
 				</Button>
@@ -114,6 +115,7 @@ const Session = (props) => {
 						SESSION_STATUS_INITIAL.status,
 					].includes(sessionStatus.status)}
 					leftIcon={<VscDebugPause />}
+					shadow="md"
 				>
 					Pause
 				</Button>
@@ -122,6 +124,7 @@ const Session = (props) => {
 					text="Reset"
 					onClick={resetPomodoro}
 					leftIcon={<VscDebugRestart />}
+					shadow="md"
 				>
 					Reset
 				</Button>

@@ -64,6 +64,7 @@ const Navbar = (props) => {
 				colorScheme="black"
 				ref={btnRef}
 				fontWeight="500"
+				shadow="md"
 			>
 				Settings
 			</Button>

@@ -13,18 +13,31 @@ const History = (props) => {
 		.filter((action) => {
 			return action.type !== "PAUSE_END" || action.pauseLength > 0;
 		})
-		.map((action) => <HistoryItem key={action.key} action={action} />);
+		.map((action) => (
+			<HistoryItem
+				key={action.key}
+				action={action}
+				bgColor={
+					action.type === "WORKING_END" ? "green.100" : "red.100"
+				}
+			/>
+		));
 
 	return (
-		<Box display="flex" w="100%" alignItems="center">
-			<Button
-				colorScheme="black"
-				onClick={props.clear}
-				leftIcon={<VscClearAll />}
-			>
-				Clear Log
-			</Button>
-			<Box>{actionItems}</Box>
+		<Box w="100%" mb={5}>
+			<Box textAlign="right" mb={5}>
+				<Button
+					size="sm"
+					colorScheme="black"
+					onClick={props.clear}
+					leftIcon={<VscClearAll />}
+				>
+					Clear Log
+				</Button>
+			</Box>
+			<Box display="flex" flexDirection="column">
+				{actionItems}
+			</Box>
 		</Box>
 	);
 };
