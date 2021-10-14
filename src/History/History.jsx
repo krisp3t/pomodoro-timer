@@ -14,14 +14,15 @@ const History = (props) => {
 			return action.type !== "PAUSE_END" || action.pauseLength > 0;
 		})
 		.map((action) => <HistoryItem key={action.key} action={action} />);
+
 	return (
-		<Box>
+		<Box display="flex" w="100%" alignItems="center">
 			<Button
 				colorScheme="black"
 				onClick={props.clear}
 				leftIcon={<VscClearAll />}
 			>
-				Clear
+				Clear Log
 			</Button>
 			<Box>{actionItems}</Box>
 		</Box>

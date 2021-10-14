@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button, ButtonGroup } from "@chakra-ui/button";
 import { Box } from "@chakra-ui/layout";
+import { Heading } from "@chakra-ui/layout";
 import { VscDebugStart, VscDebugPause, VscDebugRestart } from "react-icons/vsc";
 
 import Interval from "./Interval";
 import SessionObject from "./SessionObject";
+import StateDisplay from "./StateDisplay";
 
 const SESSION_STATUS_WORKING = { status: "working" };
 const SESSION_STATUS_PAUSED = { status: "paused" };
@@ -83,9 +85,14 @@ const Session = (props) => {
 	}, []);
 
 	return (
-		<React.Fragment>
-			<Box>
-				<Interval timestamp={timestamp} />
+		<Box pb={10} textAlign="center">
+			{sessionStatus.status !== SESSION_STATUS_INITIAL.status && (
+				<StateDisplay sessionState={sessionStatus.status} />
+			)}
+			<Box pb={5}>
+				<Heading>
+					<Interval timestamp={timestamp} />
+				</Heading>
 			</Box>
 			<ButtonGroup spacing="6">
 				<Button
@@ -119,7 +126,7 @@ const Session = (props) => {
 					Reset
 				</Button>
 			</ButtonGroup>
-		</React.Fragment>
+		</Box>
 	);
 };
 

@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { Container, VStack } from "@chakra-ui/layout";
+import { Container, Divider, VStack } from "@chakra-ui/layout";
 
 import Navbar from "./UI/Navbar";
 import Session from "./Session/Session";
@@ -45,12 +45,13 @@ function App() {
 	return (
 		<React.Fragment>
 			<Navbar />
-			<Container centerContent p="6">
-				<VStack>
+			<Container maxW="container.lg" centerContent p="6">
+				<VStack w="100%">
 					<Session
 						onAction={updatePomodoroActionItems}
 						reset={resetActionsList}
 					/>
+					<Divider borderColor="gray.200" />
 					<History
 						items={pomodoroActionItems}
 						clear={resetActionsList}

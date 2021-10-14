@@ -33,7 +33,6 @@ const Navbar = (props) => {
 			wrap="wrap"
 			padding={6}
 			bg="gray.200"
-			{...props}
 		>
 			<Flex
 				align="flex-start"
@@ -41,6 +40,7 @@ const Navbar = (props) => {
 				mr={5}
 				bgGradient="linear(to-l, #7928CA, red.500)"
 				bgClip="text"
+				cursor="pointer"
 			>
 				<Icon as={GiTomato} w={10} h={10} mr={3} color="red.500" />
 				<Box>
