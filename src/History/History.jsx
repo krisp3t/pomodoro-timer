@@ -8,23 +8,17 @@ import HistoryItem from "./HistoryItem";
 const History = (props) => {
 	const actionItems = props.items
 		.filter((action) => {
-			return ["WORKING_END", "PAUSE_END"].includes(action.type);
+			return ["WORKING_END", "PAUSE_END", "BREAK_END"].includes(
+				action.type
+			);
 		})
 		.filter((action) => {
-			return action.type !== "PAUSE_END" || action.pauseLength > 0;
+			return action.type !== "PAUSE_END" || action.pauseLength > 1;
 		})
-		.map((action) => (
-			<HistoryItem
-				key={action.key}
-				action={action}
-				bgColor={
-					action.type === "WORKING_END" ? "green.100" : "red.100"
-				}
-			/>
-		));
+		.map((action) => <HistoryItem key={action.key} action={action} />);
 
 	return (
-		<Box w="100%" mb={5}>
+		<Box w="100%">
 			<Box textAlign="right" mb={5}>
 				<Button
 					size="sm"

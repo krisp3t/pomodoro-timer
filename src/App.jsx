@@ -13,7 +13,7 @@ function App() {
 				return [sessionAction, ...pomodoroActions];
 			case "BREAK_END":
 				pomodoroActions[0].break = true;
-				return [...pomodoroActions];
+				return [sessionAction, ...pomodoroActions];
 			case "PAUSE_START":
 				return [sessionAction, ...pomodoroActions];
 			case "PAUSE_END":

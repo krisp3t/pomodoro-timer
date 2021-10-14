@@ -3,6 +3,7 @@ import { Box, Heading, Text, Badge } from "@chakra-ui/layout";
 import { Icon } from "@chakra-ui/icon";
 import { VscCheck, VscDebugPause } from "react-icons/vsc";
 import { IoMdClock } from "react-icons/io";
+import { GiNightSleep } from "react-icons/gi";
 
 import { calculateMinSec } from "../Session/Interval";
 
@@ -10,16 +11,29 @@ const ActionCompleted = (props) => {
 	return (
 		<React.Fragment>
 			<Box d="flex" alignItems="center" mb={2}>
-				<Badge d="flex" alignItems="center" textTransform="lowercase">
+				<Badge
+					d="flex"
+					alignItems="center"
+					textTransform="lowercase"
+					borderWidth="1px"
+					borderRadius="lg"
+					borderColor="blackAlpha.400"
+				>
 					<Text>At {props.action.timeDisplay}</Text>
 				</Badge>
 				<Box d="flex" alignItems="center" m="auto">
-					<Icon as={props.icon} d="inline" h={6} w={6} mr={1} />
+					<Icon as={props.icon} d="inline" h={6} w={6} mr={2} />
 					<Heading as="h3" fontSize="xl" d="inline" fontWeight="500">
 						{props.title}
 					</Heading>
 				</Box>
-				<Badge d="flex" alignItems="center">
+				<Badge
+					d="flex"
+					alignItems="center"
+					borderWidth="1px"
+					borderRadius="lg"
+					borderColor="blackAlpha.400"
+				>
 					<Icon as={IoMdClock} d="inline" mr={1} />
 					{props.pauseLength || props.action.pomodoroTime}
 				</Badge>
@@ -29,6 +43,8 @@ const ActionCompleted = (props) => {
 };
 
 const HistoryItem = (props) => {
+	console.log(props);
+
 	let content;
 	switch (props.action.type) {
 		case "WORKING_END":
@@ -50,6 +66,15 @@ const HistoryItem = (props) => {
 				/>
 			);
 			break;
+		case "BREAK_END":
+			content = (
+				<ActionCompleted
+					title="Break"
+					icon={GiNightSleep}
+					action={props.action}
+				/>
+			);
+			break;
 		default:
 			break;
 	}
@@ -63,7 +88,7 @@ const HistoryItem = (props) => {
 			borderWidth="1px"
 			borderRadius="lg"
 			overflow="hidden"
-			bgColor={props.bgColor}
+			bgColor={props.action.bgColor}
 			shadow="md"
 		>
 			{content}
