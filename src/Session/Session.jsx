@@ -73,6 +73,9 @@ const Session = (props) => {
 				props.onAction(new SessionObject("PAUSE_START", timestamp));
 				break;
 			case SESSION_STATUS_INITIAL:
+				props.onAction({
+					type: "RESET",
+				});
 				setTimestamp(0);
 				break;
 			default:

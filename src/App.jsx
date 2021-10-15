@@ -3,6 +3,7 @@ import { Container, Divider, VStack } from "@chakra-ui/layout";
 
 import Navbar from "./UI/Navbar";
 import Session from "./Session/Session";
+import SessionStats from "./Stats/SessionStats";
 import History from "./History/History";
 
 function App() {
@@ -51,6 +52,8 @@ function App() {
 						onAction={updatePomodoroActionItems}
 						reset={resetActionsList}
 					/>
+					<Divider borderColor="gray.200" />
+					<SessionStats newAction={pomodoroActionItems[0]} />
 					<Divider borderColor="gray.200" />
 					<History
 						items={pomodoroActionItems}

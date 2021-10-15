@@ -81,7 +81,7 @@ const HistoryItem = (props) => {
 	return (
 		<Box
 			m="auto"
-			w="50%"
+			w="60%"
 			mb={5}
 			px={4}
 			py={2}
