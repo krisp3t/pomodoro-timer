@@ -5,11 +5,14 @@ import { Box } from "@chakra-ui/layout";
 import { Heading } from "@chakra-ui/layout";
 import { VscDebugStart, VscDebugPause, VscDebugRestart } from "react-icons/vsc";
 
-import TomatoLogo from "../assets/tomato.png";
+import tomatoLogo from "../assets/tomato.png";
+import alarmSound from "../assets/alarm.mp3";
+
 import Interval from "./Interval";
 import SessionObject from "./SessionObject";
 import StateDisplay from "./StateDisplay";
 
+const alarm = new Audio(alarmSound);
 const SESSION_STATUS_WORKING = { status: "working" };
 const SESSION_STATUS_PAUSED = { status: "paused" };
 const SESSION_STATUS_BREAK = { status: "break" };
@@ -56,19 +59,23 @@ const Session = (props) => {
 
 	useEffect(() => {
 		if (timestamp === POMODORO_DURATION) {
+			/* Work session completed */
 			new Notification("Pomodoro Timer", {
 				body: "Work session completed! Good work, now take a break 😉🔥",
-				icon: TomatoLogo,
+				icon: tomatoLogo,
 			});
 			props.onAction(new SessionObject("WORKING_END", POMODORO_DURATION));
+			alarm.play();
 			setTimestamp(BREAK_DURATION);
 			setSessionStatus(SESSION_STATUS_BREAK);
 		} else if (timestamp === 0 && sessionStatus === SESSION_STATUS_BREAK) {
+			/* Break completed */
 			new Notification("Pomodoro Timer", {
 				body: "Break is over - back to hustling! 💪",
-				icon: TomatoLogo,
+				icon: tomatoLogo,
 			});
 			props.onAction(new SessionObject("BREAK_END", BREAK_DURATION));
+			alarm.play();
 			setSessionStatus(SESSION_STATUS_WORKING);
 		}
 	}, [timestamp]);
