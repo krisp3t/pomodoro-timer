@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
+
 import { Button, ButtonGroup } from "@chakra-ui/button";
 import { Box } from "@chakra-ui/layout";
 import { Heading } from "@chakra-ui/layout";
 import { VscDebugStart, VscDebugPause, VscDebugRestart } from "react-icons/vsc";
 
+import TomatoLogo from "../assets/tomato.png";
 import Interval from "./Interval";
 import SessionObject from "./SessionObject";
 import StateDisplay from "./StateDisplay";
@@ -42,12 +44,30 @@ const Session = (props) => {
 	};
 
 	useEffect(() => {
+		/* Notifications API */
+		if (!("Notification" in window)) {
+			console.log("This browser does not support desktop notifications");
+		} else {
+			Notification.requestPermission();
+		}
+		/* Cleanup */
+		return () => clearInterval(pomodoroInterval.current);
+	}, []);
+
+	useEffect(() => {
 		if (timestamp === POMODORO_DURATION) {
+			new Notification("Pomodoro Timer", {
+				body: "Work session completed! Good work, now take a break 😉🔥",
+				icon: TomatoLogo,
+			});
 			props.onAction(new SessionObject("WORKING_END", POMODORO_DURATION));
 			setTimestamp(BREAK_DURATION);
 			setSessionStatus(SESSION_STATUS_BREAK);
 		} else if (timestamp === 0 && sessionStatus === SESSION_STATUS_BREAK) {
-			console.log("SENDING");
+			new Notification("Pomodoro Timer", {
+				body: "Break is over - back to hustling! 💪",
+				icon: TomatoLogo,
+			});
 			props.onAction(new SessionObject("BREAK_END", BREAK_DURATION));
 			setSessionStatus(SESSION_STATUS_WORKING);
 		}
@@ -82,11 +102,6 @@ const Session = (props) => {
 				return;
 		}
 	}, [sessionStatus]);
-
-	/* Cleanup */
-	useEffect(() => {
-		return () => clearInterval(pomodoroInterval.current);
-	}, []);
 
 	return (
 		<Box pb={10} textAlign="center">
