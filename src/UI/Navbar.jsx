@@ -26,6 +26,7 @@ import {
 	DrawerOverlay,
 	DrawerContent,
 	DrawerCloseButton,
+	FormLabel,
 } from "@chakra-ui/react";
 import { VscSettingsGear } from "react-icons/vsc";
 import { GiTomato } from "react-icons/gi";
@@ -41,7 +42,6 @@ const Navbar = (props) => {
 	return (
 		<Flex
 			as="nav"
-			align="center"
 			justify="space-between"
 			wrap="wrap"
 			padding={6}
@@ -70,13 +70,19 @@ const Navbar = (props) => {
 				</Box>
 			</Flex>
 
-			<Box>
-				<Switch
-					id="colorModeSwitch"
-					onChange={toggleColorMode}
-					isChecked={colorMode === "dark"}
-					mr={10}
-				/>
+			<Box d="flex">
+				<Box d="flex" flexDir="column" alignItems="center" mr={10}>
+					<Switch
+						id="colorModeSwitch"
+						onChange={toggleColorMode}
+						isChecked={colorMode === "dark"}
+						size="md"
+					/>
+					<FormLabel fontSize="sm" m={0}>
+						Dark Mode
+					</FormLabel>
+				</Box>
+
 				<Button
 					onClick={handleToggle}
 					leftIcon={<VscSettingsGear />}
