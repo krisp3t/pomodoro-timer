@@ -18,12 +18,26 @@ const ActionCompleted = (props) => {
 					borderWidth="1px"
 					borderRadius="lg"
 					borderColor="blackAlpha.400"
+					color="gray.800"
 				>
 					<Text>At {props.action.timeDisplay}</Text>
 				</Badge>
 				<Box d="flex" alignItems="center" m="auto">
-					<Icon as={props.icon} d="inline" h={6} w={6} mr={2} />
-					<Heading as="h3" fontSize="xl" d="inline" fontWeight="500">
+					<Icon
+						as={props.icon}
+						d="inline"
+						h={6}
+						w={6}
+						mr={2}
+						color="gray.800"
+					/>
+					<Heading
+						as="h3"
+						fontSize="xl"
+						d="inline"
+						fontWeight="500"
+						color="gray.800"
+					>
 						{props.title}
 					</Heading>
 				</Box>
@@ -33,6 +47,7 @@ const ActionCompleted = (props) => {
 					borderWidth="1px"
 					borderRadius="lg"
 					borderColor="blackAlpha.400"
+					color="gray.800"
 				>
 					<Icon as={IoMdClock} d="inline" mr={1} />
 					{props.pauseLength || props.action.pomodoroTime}

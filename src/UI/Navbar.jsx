@@ -8,6 +8,8 @@ import {
 	Switch,
 	Text,
 	useDisclosure,
+	useColorMode,
+	useColorModeValue,
 } from "@chakra-ui/react";
 import {
 	NumberInput,
@@ -33,6 +35,9 @@ const Navbar = (props) => {
 	const handleToggle = () => (isOpen ? onClose() : onOpen());
 	const btnRef = useRef();
 
+	const { colorMode, toggleColorMode } = useColorMode();
+	const navbarBg = useColorModeValue("gray.200", "gray.800");
+
 	return (
 		<Flex
 			as="nav"
@@ -40,7 +45,7 @@ const Navbar = (props) => {
 			justify="space-between"
 			wrap="wrap"
 			padding={6}
-			bg="gray.200"
+			bg={navbarBg}
 		>
 			<Flex
 				align="flex-start"
@@ -66,7 +71,12 @@ const Navbar = (props) => {
 			</Flex>
 
 			<Box>
-				<Switch id="colorMode" mr={10} />
+				<Switch
+					id="colorModeSwitch"
+					onChange={toggleColorMode}
+					isChecked={colorMode === "dark"}
+					mr={10}
+				/>
 				<Button
 					onClick={handleToggle}
 					leftIcon={<VscSettingsGear />}
