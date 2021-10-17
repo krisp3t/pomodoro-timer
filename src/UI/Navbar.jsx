@@ -28,6 +28,12 @@ import {
 	DrawerCloseButton,
 	FormLabel,
 } from "@chakra-ui/react";
+import {
+	Slider,
+	SliderTrack,
+	SliderFilledTrack,
+	SliderThumb,
+} from "@chakra-ui/react";
 import { VscSettingsGear } from "react-icons/vsc";
 import { GiTomato } from "react-icons/gi";
 
@@ -178,22 +184,15 @@ const Navbar = (props) => {
 								});
 							}}
 						/>
+						<Text>Alarm volume</Text>
+						<Slider defaultValue={0.6} min={0} max={1} step={0.2}>
+							<SliderTrack bg="gray.200">
+								<Box position="relative" right={10} />
+								<SliderFilledTrack bg="blue.500" />
+							</SliderTrack>
+							<SliderThumb boxSize={6} borderColor="gray.200" />
+						</Slider>
 					</DrawerBody>
-
-					<DrawerFooter>
-						<Button variant="outline" mr={3} onClick={onClose}>
-							Cancel
-						</Button>
-						<Button
-							colorScheme="black"
-							onClick={() => {
-								clickedSave.current = true;
-								onClose();
-							}}
-						>
-							Save
-						</Button>
-					</DrawerFooter>
 				</DrawerContent>
 			</Drawer>
 		</Flex>
