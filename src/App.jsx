@@ -1,14 +1,16 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useContext } from "react";
 import { Container, Divider, VStack } from "@chakra-ui/layout";
 
 import Navbar from "./UI/Navbar";
 import Session from "./Session/Session";
 import SessionStats from "./Stats/SessionStats";
 import History from "./History/History";
+import SettingsContext from "./store/settingsContext";
 
 function App() {
+	const settingsCtx = useContext(SettingsContext);
+
 	const pomodoroActionsReducer = (pomodoroActions, sessionAction) => {
-		console.log(pomodoroActions);
 		switch (sessionAction.type) {
 			case "WORKING_END":
 				return [sessionAction, ...pomodoroActions];
@@ -53,12 +55,18 @@ function App() {
 						reset={resetActionsList}
 					/>
 					<Divider borderColor="gray.200" />
-					<SessionStats newAction={pomodoroActionItems[0]} />
-					<Divider borderColor="gray.200" />
-					<History
-						items={pomodoroActionItems}
-						clear={resetActionsList}
-					/>
+					{settingsCtx.isStatistics && (
+						<React.Fragment>
+							<SessionStats newAction={pomodoroActionItems[0]} />
+							<Divider borderColor="gray.200" />
+						</React.Fragment>
+					)}
+					{settingsCtx.isLog && (
+						<History
+							items={pomodoroActionItems}
+							clear={resetActionsList}
+						/>
+					)}
 				</VStack>
 			</Container>
 		</React.Fragment>

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useContext, useEffect, useState } from "react";
 import {
 	Heading,
 	Flex,
@@ -31,13 +31,32 @@ import {
 import { VscSettingsGear } from "react-icons/vsc";
 import { GiTomato } from "react-icons/gi";
 
+import SettingsContext from "../store/settingsContext";
+
 const Navbar = (props) => {
+	const settingsCtx = useContext(SettingsContext);
+	const [settingsCandidate, setSettingsCandidate] = useState(settingsCtx);
+
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const handleToggle = () => (isOpen ? onClose() : onOpen());
 	const btnRef = useRef();
+	let clickedSave = useRef(false);
 
 	const { colorMode, toggleColorMode } = useColorMode();
 	const navbarBg = useColorModeValue("gray.200", "gray.800");
+
+	useEffect(() => {
+		if (isOpen) {
+			clickedSave.current = false;
+			setSettingsCandidate(settingsCtx);
+		} else {
+			if (clickedSave.current) {
+				const { isStatistics, isLog, isNotifications } =
+					settingsCandidate;
+				settingsCtx.updateToggles(isStatistics, isLog, isNotifications);
+			}
+		}
+	}, [isOpen]);
 
 	return (
 		<Flex
@@ -125,18 +144,55 @@ const Navbar = (props) => {
 							</NumberInputStepper>
 						</NumberInput>
 						<Text>Display statistics</Text>
-						<Switch id="isStatistics" />
+						<Switch
+							id="isStatistics"
+							isChecked={settingsCandidate.isStatistics}
+							onChange={() => {
+								setSettingsCandidate({
+									...settingsCandidate,
+									isStatistics:
+										!settingsCandidate.isStatistics,
+								});
+							}}
+						/>
 						<Text>Display log</Text>
-						<Switch id="isLog" />
+						<Switch
+							id="isLog"
+							isChecked={settingsCandidate.isLog}
+							onChange={() => {
+								setSettingsCandidate({
+									...settingsCandidate,
+									isLog: !settingsCandidate.isLog,
+								});
+							}}
+						/>
 						<Text>Display notifications</Text>
-						<Switch id="isNotifications" />
+						<Switch
+							id="isNotifications"
+							isChecked={settingsCandidate.isNotifications}
+							onChange={() => {
+								setSettingsCandidate({
+									...settingsCandidate,
+									isNotifications:
+										!settingsCandidate.isNotifications,
+								});
+							}}
+						/>
 					</DrawerBody>
 
 					<DrawerFooter>
 						<Button variant="outline" mr={3} onClick={onClose}>
 							Cancel
 						</Button>
-						<Button colorScheme="black">Save</Button>
+						<Button
+							colorScheme="black"
+							onClick={() => {
+								clickedSave.current = true;
+								onClose();
+							}}
+						>
+							Save
+						</Button>
 					</DrawerFooter>
 				</DrawerContent>
 			</Drawer>
