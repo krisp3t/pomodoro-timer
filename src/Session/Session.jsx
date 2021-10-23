@@ -6,6 +6,7 @@ import { VscDebugStart, VscDebugPause, VscDebugRestart } from "react-icons/vsc";
 import tomatoLogo from "../assets/tomato.png";
 import alarmSound from "../assets/alarm.mp3";
 import Interval from "./Interval";
+import { calculateMinSec } from "./Interval";
 import SessionObject from "./SessionObject";
 import StateDisplay from "./StateDisplay";
 import SettingsContext from "../store/settingsContext";
@@ -63,6 +64,8 @@ const Session = (props) => {
 	}, []);
 
 	useEffect(() => {
+		document.title = `(${calculateMinSec(timestamp)}) Pomodoro Timer`;
+
 		if (timestamp === settingsCtx.pomodoroDuration) {
 			/* Work session completed */
 			if (settingsCtx.isNotifications) {
