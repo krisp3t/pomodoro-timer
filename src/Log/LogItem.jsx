@@ -19,7 +19,12 @@ const ActionCompleted = (props) => {
 					borderColor="blackAlpha.400"
 					color="gray.800"
 				>
-					<Text>At {props.action.timeDisplay}</Text>
+					<Text>
+						{["PAUSE_END", "BREAK_END"].includes(props.action.type)
+							? "Till "
+							: "At "}
+						{props.action.timeDisplay}
+					</Text>
 				</Badge>
 				<Box d="flex" alignItems="center" m="auto">
 					<Icon
@@ -56,9 +61,7 @@ const ActionCompleted = (props) => {
 	);
 };
 
-const HistoryItem = (props) => {
-	console.log(props);
-
+const LogItem = (props) => {
 	let content;
 	switch (props.action.type) {
 		case "WORKING_END":
@@ -110,4 +113,4 @@ const HistoryItem = (props) => {
 	);
 };
 
-export default HistoryItem;
+export default LogItem;

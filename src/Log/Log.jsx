@@ -2,9 +2,9 @@ import React from "react";
 import { Box, Button } from "@chakra-ui/react";
 import { VscClearAll } from "react-icons/vsc";
 
-import HistoryItem from "./HistoryItem";
+import LogItem from "./LogItem";
 
-const History = (props) => {
+const Log = (props) => {
 	const actionItems = props.items
 		.filter((action) => {
 			return ["WORKING_END", "PAUSE_END", "BREAK_END"].includes(
@@ -14,7 +14,7 @@ const History = (props) => {
 		.filter((action) => {
 			return action.type !== "PAUSE_END" || action.pauseLength > 30;
 		})
-		.map((action) => <HistoryItem key={action.key} action={action} />);
+		.map((action) => <LogItem key={action.key} action={action} />);
 
 	return (
 		<Box w="100%">
@@ -35,4 +35,4 @@ const History = (props) => {
 	);
 };
 
-export default History;
+export default Log;

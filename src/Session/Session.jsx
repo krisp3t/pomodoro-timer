@@ -15,15 +15,19 @@ const alarm = new Audio(alarmSound);
 const SESSION_STATUS = {
 	working: {
 		status: "working",
+		before: "",
 	},
 	paused: {
 		status: "paused",
+		before: "",
 	},
 	break: {
 		status: "break",
+		before: "",
 	},
 	initial: {
 		status: "initial",
+		before: "",
 	},
 };
 
@@ -36,15 +40,18 @@ const Session = (props) => {
 
 	const startPomodoro = () => {
 		setSessionStatus(
-			sessionStatus.status === "paused"
-				? sessionStatus.beforePause
+			sessionStatus.status === SESSION_STATUS.paused.status
+				? {
+						status: sessionStatus.before,
+						before: SESSION_STATUS.paused.status,
+				  }
 				: SESSION_STATUS.working
 		);
 	};
 	const pausePomodoro = () => {
 		setSessionStatus({
 			...SESSION_STATUS.paused,
-			beforePause: sessionStatus,
+			before: sessionStatus.status,
 		});
 	};
 	const resetPomodoro = () => {
@@ -79,7 +86,10 @@ const Session = (props) => {
 			);
 			alarm.play();
 			setSessionStatus(SESSION_STATUS.break);
-		} else if (timestamp === 0 && sessionStatus === SESSION_STATUS.break) {
+		} else if (
+			timestamp === 0 &&
+			sessionStatus.status === SESSION_STATUS.break.status
+		) {
 			/* Break completed */
 			if (settingsCtx.isNotifications) {
 				new Notification("Pomodoro Timer", {
@@ -97,25 +107,26 @@ const Session = (props) => {
 
 	useEffect(() => {
 		clearInterval(pomodoroInterval.current);
-		switch (sessionStatus) {
-			case SESSION_STATUS.working:
+		switch (sessionStatus.status) {
+			case SESSION_STATUS.working.status:
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds + 1),
 					5
 				);
 				props.onAction(new SessionObject("PAUSE_END", timestamp));
 				break;
-			case SESSION_STATUS.break:
-				setTimestamp(settingsCtx.breakDuration);
+			case SESSION_STATUS.break.status:
+				if (sessionStatus.before !== "paused")
+					setTimestamp(settingsCtx.breakDuration);
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds - 1),
 					5
 				);
 				break;
-			case SESSION_STATUS.paused:
+			case SESSION_STATUS.paused.status:
 				props.onAction(new SessionObject("PAUSE_START", timestamp));
 				break;
-			case SESSION_STATUS.initial:
+			case SESSION_STATUS.initial.status:
 				props.onAction({
 					type: "RESET",
 				});

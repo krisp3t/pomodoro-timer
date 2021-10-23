@@ -4,7 +4,7 @@ import { Container, Divider, VStack } from "@chakra-ui/layout";
 import Navbar from "./UI/Navbar";
 import Session from "./Session/Session";
 import SessionStats from "./Stats/SessionStats";
-import History from "./History/History";
+import Log from "./Log/Log";
 import SettingsContext from "./store/settingsContext";
 
 function App() {
@@ -63,7 +63,7 @@ function App() {
 						</React.Fragment>
 					)}
 					{settingsCtx.isLog && (
-						<History
+						<Log
 							items={pomodoroActionItems}
 							clear={resetActionsList}
 						/>
