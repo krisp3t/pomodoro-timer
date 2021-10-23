@@ -11,37 +11,43 @@ import StateDisplay from "./StateDisplay";
 import SettingsContext from "../store/settingsContext";
 
 const alarm = new Audio(alarmSound);
-const SESSION_STATUS_WORKING = { status: "working" };
-const SESSION_STATUS_PAUSED = { status: "paused" };
-const SESSION_STATUS_BREAK = { status: "break" };
-const SESSION_STATUS_INITIAL = { status: "initial" };
+const SESSION_STATUS = {
+	working: {
+		status: "working",
+	},
+	paused: {
+		status: "paused",
+	},
+	break: {
+		status: "break",
+	},
+	initial: {
+		status: "initial",
+	},
+};
 
 const Session = (props) => {
 	const [timestamp, setTimestamp] = useState(0);
-	const [sessionStatus, setSessionStatus] = useState(SESSION_STATUS_INITIAL);
+	const [sessionStatus, setSessionStatus] = useState(SESSION_STATUS.initial);
 	const pomodoroInterval = useRef();
 	const settingsCtx = useContext(SettingsContext);
 	alarm.volume = settingsCtx.audioVolume;
-	console.log(settingsCtx);
 
 	const startPomodoro = () => {
-		if (sessionStatus.status === "paused") {
-			setSessionStatus(sessionStatus.beforePause);
-			return;
-		}
-		setSessionStatus(SESSION_STATUS_WORKING);
+		setSessionStatus(
+			sessionStatus.status === "paused"
+				? sessionStatus.beforePause
+				: SESSION_STATUS.working
+		);
 	};
-
 	const pausePomodoro = () => {
 		setSessionStatus({
-			...SESSION_STATUS_PAUSED,
+			...SESSION_STATUS.paused,
 			beforePause: sessionStatus,
 		});
 	};
-
 	const resetPomodoro = () => {
-		setSessionStatus(SESSION_STATUS_INITIAL);
-		setTimestamp(0);
+		setSessionStatus(SESSION_STATUS.initial);
 		props.reset();
 	};
 
@@ -69,9 +75,8 @@ const Session = (props) => {
 				new SessionObject("WORKING_END", settingsCtx.pomodoroDuration)
 			);
 			alarm.play();
-			setTimestamp(settingsCtx.breakDuration);
-			setSessionStatus(SESSION_STATUS_BREAK);
-		} else if (timestamp === 0 && sessionStatus === SESSION_STATUS_BREAK) {
+			setSessionStatus(SESSION_STATUS.break);
+		} else if (timestamp === 0 && sessionStatus === SESSION_STATUS.break) {
 			/* Break completed */
 			if (settingsCtx.isNotifications) {
 				new Notification("Pomodoro Timer", {
@@ -83,30 +88,31 @@ const Session = (props) => {
 				new SessionObject("BREAK_END", settingsCtx.breakDuration)
 			);
 			alarm.play();
-			setSessionStatus(SESSION_STATUS_WORKING);
+			setSessionStatus(SESSION_STATUS.working);
 		}
 	}, [timestamp]);
 
 	useEffect(() => {
 		clearInterval(pomodoroInterval.current);
 		switch (sessionStatus) {
-			case SESSION_STATUS_WORKING:
+			case SESSION_STATUS.working:
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds + 1),
 					5
 				);
 				props.onAction(new SessionObject("PAUSE_END", timestamp));
 				break;
-			case SESSION_STATUS_BREAK:
+			case SESSION_STATUS.break:
+				setTimestamp(settingsCtx.breakDuration);
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds - 1),
 					5
 				);
 				break;
-			case SESSION_STATUS_PAUSED:
+			case SESSION_STATUS.paused:
 				props.onAction(new SessionObject("PAUSE_START", timestamp));
 				break;
-			case SESSION_STATUS_INITIAL:
+			case SESSION_STATUS.initial:
 				props.onAction({
 					type: "RESET",
 				});
@@ -119,7 +125,7 @@ const Session = (props) => {
 
 	return (
 		<Box pb={10} textAlign="center">
-			{sessionStatus.status !== SESSION_STATUS_INITIAL.status && (
+			{sessionStatus.status !== SESSION_STATUS.initial.status && (
 				<StateDisplay sessionState={sessionStatus.status} />
 			)}
 			<Box pb={5}>
@@ -132,8 +138,8 @@ const Session = (props) => {
 					colorScheme="green"
 					onClick={startPomodoro}
 					isDisabled={[
-						SESSION_STATUS_WORKING.status,
-						SESSION_STATUS_BREAK.status,
+						SESSION_STATUS.working.status,
+						SESSION_STATUS.break.status,
 					].includes(sessionStatus.status)}
 					leftIcon={<VscDebugStart />}
 					shadow="md"
@@ -144,8 +150,8 @@ const Session = (props) => {
 					colorScheme="red"
 					onClick={pausePomodoro}
 					isDisabled={[
-						SESSION_STATUS_PAUSED.status,
-						SESSION_STATUS_INITIAL.status,
+						SESSION_STATUS.paused.status,
+						SESSION_STATUS.initial.status,
 					].includes(sessionStatus.status)}
 					leftIcon={<VscDebugPause />}
 					shadow="md"
