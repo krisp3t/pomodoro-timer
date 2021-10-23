@@ -51,6 +51,10 @@ const Navbar = (props) => {
 			setSettingsCandidate(settingsCtx);
 		} else {
 			if (clickedSave.current) {
+				localStorage.setItem(
+					"userPreferences",
+					JSON.stringify(settingsCandidate)
+				);
 				settingsCtx.updateToggles(settingsCandidate);
 			}
 		}

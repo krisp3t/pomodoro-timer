@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import SettingsContext from "./settingsContext";
 
 const SettingsProvider = (props) => {
+	const userPreferences = JSON.parse(localStorage.getItem("userPreferences"));
+	console.log("user", userPreferences);
+
 	const [statistics, setStatistics] = useState(true);
 	const [log, setLog] = useState(true);
 	const [notifications, setNotifications] = useState(true);
@@ -26,6 +29,12 @@ const SettingsProvider = (props) => {
 			setBreakDuration(obj.breakDuration);
 		},
 	};
+
+	useEffect(() => {
+		if (userPreferences) {
+			settingsContext.updateToggles(userPreferences);
+		}
+	}, []);
 
 	return (
 		<SettingsContext.Provider value={settingsContext}>

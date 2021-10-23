@@ -11,7 +11,6 @@ function App() {
 	const settingsCtx = useContext(SettingsContext);
 
 	const pomodoroActionsReducer = (pomodoroActions, sessionAction) => {
-		console.log(sessionAction);
 		switch (sessionAction.type) {
 			case "WORKING_END":
 				return [sessionAction, ...pomodoroActions];
