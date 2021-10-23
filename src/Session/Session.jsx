@@ -111,7 +111,7 @@ const Session = (props) => {
 			case SESSION_STATUS.working.status:
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds + 1),
-					5
+					1000
 				);
 				props.onAction(new SessionObject("PAUSE_END", timestamp));
 				break;
@@ -120,7 +120,7 @@ const Session = (props) => {
 					setTimestamp(settingsCtx.breakDuration);
 				pomodoroInterval.current = setInterval(
 					() => setTimestamp((seconds) => seconds - 1),
-					5
+					1000
 				);
 				break;
 			case SESSION_STATUS.paused.status:
