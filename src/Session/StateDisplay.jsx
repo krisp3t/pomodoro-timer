@@ -1,6 +1,5 @@
 import React from "react";
-import { Tag } from "@chakra-ui/tag";
-import { useColorModeValue } from "@chakra-ui/color-mode";
+import { Tag, useColorModeValue } from "@chakra-ui/react";
 
 const StateDisplay = (props) => {
 	const bg = useColorModeValue("gray.200", "gray.800");

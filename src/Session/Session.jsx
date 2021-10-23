@@ -1,29 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 
-import { Button, ButtonGroup } from "@chakra-ui/button";
-import { Box } from "@chakra-ui/layout";
-import { Heading } from "@chakra-ui/layout";
+import { Button, ButtonGroup, Box, Heading } from "@chakra-ui/react";
 import { VscDebugStart, VscDebugPause, VscDebugRestart } from "react-icons/vsc";
 
 import tomatoLogo from "../assets/tomato.png";
 import alarmSound from "../assets/alarm.mp3";
-
 import Interval from "./Interval";
 import SessionObject from "./SessionObject";
 import StateDisplay from "./StateDisplay";
+import SettingsContext from "../store/settingsContext";
 
 const alarm = new Audio(alarmSound);
 const SESSION_STATUS_WORKING = { status: "working" };
 const SESSION_STATUS_PAUSED = { status: "paused" };
 const SESSION_STATUS_BREAK = { status: "break" };
 const SESSION_STATUS_INITIAL = { status: "initial" };
-const POMODORO_DURATION = 1500;
-const BREAK_DURATION = 300;
 
 const Session = (props) => {
 	const [timestamp, setTimestamp] = useState(0);
 	const [sessionStatus, setSessionStatus] = useState(SESSION_STATUS_INITIAL);
 	const pomodoroInterval = useRef();
+	const settingsCtx = useContext(SettingsContext);
+	alarm.volume = settingsCtx.audioVolume;
+	console.log(settingsCtx);
 
 	const startPomodoro = () => {
 		if (sessionStatus.status === "paused") {
@@ -58,23 +57,31 @@ const Session = (props) => {
 	}, []);
 
 	useEffect(() => {
-		if (timestamp === POMODORO_DURATION) {
+		if (timestamp === settingsCtx.pomodoroDuration) {
 			/* Work session completed */
-			new Notification("Pomodoro Timer", {
-				body: "Work session completed! Good work, now take a break 😉🔥",
-				icon: tomatoLogo,
-			});
-			props.onAction(new SessionObject("WORKING_END", POMODORO_DURATION));
+			if (settingsCtx.isNotifications) {
+				new Notification("Pomodoro Timer", {
+					body: "Work session completed! Good work, now take a break 😉🔥",
+					icon: tomatoLogo,
+				});
+			}
+			props.onAction(
+				new SessionObject("WORKING_END", settingsCtx.pomodoroDuration)
+			);
 			alarm.play();
-			setTimestamp(BREAK_DURATION);
+			setTimestamp(settingsCtx.breakDuration);
 			setSessionStatus(SESSION_STATUS_BREAK);
 		} else if (timestamp === 0 && sessionStatus === SESSION_STATUS_BREAK) {
 			/* Break completed */
-			new Notification("Pomodoro Timer", {
-				body: "Break is over - back to hustling! 💪",
-				icon: tomatoLogo,
-			});
-			props.onAction(new SessionObject("BREAK_END", BREAK_DURATION));
+			if (settingsCtx.isNotifications) {
+				new Notification("Pomodoro Timer", {
+					body: "Break is over - back to hustling! 💪",
+					icon: tomatoLogo,
+				});
+			}
+			props.onAction(
+				new SessionObject("BREAK_END", settingsCtx.breakDuration)
+			);
 			alarm.play();
 			setSessionStatus(SESSION_STATUS_WORKING);
 		}

@@ -1,6 +1,5 @@
 import React from "react";
-import { Box, Heading, Text, Badge } from "@chakra-ui/layout";
-import { Icon } from "@chakra-ui/icon";
+import { Box, Heading, Text, Badge, Icon } from "@chakra-ui/react";
 import { VscCheck, VscDebugPause } from "react-icons/vsc";
 import { IoMdClock } from "react-icons/io";
 import { GiNightSleep } from "react-icons/gi";

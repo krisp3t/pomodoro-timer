@@ -1,6 +1,5 @@
 import React from "react";
-import { Box } from "@chakra-ui/layout";
-import { Button } from "@chakra-ui/button";
+import { Box, Button } from "@chakra-ui/react";
 import { VscClearAll } from "react-icons/vsc";
 
 import HistoryItem from "./HistoryItem";

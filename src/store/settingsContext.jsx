@@ -6,7 +6,7 @@ const SettingsContext = React.createContext({
 	isStatistics: true,
 	isLog: true,
 	isNotifications: true,
-	audioVolume: 3,
+	audioVolume: 0.6,
 });
 
 export default SettingsContext;

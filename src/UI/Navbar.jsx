@@ -7,18 +7,15 @@ import {
 	Box,
 	Switch,
 	Text,
+	VStack,
 	useDisclosure,
 	useColorMode,
 	useColorModeValue,
-} from "@chakra-ui/react";
-import {
 	NumberInput,
 	NumberInputField,
 	NumberInputStepper,
 	NumberIncrementStepper,
 	NumberDecrementStepper,
-} from "@chakra-ui/react";
-import {
 	Drawer,
 	DrawerBody,
 	DrawerFooter,
@@ -27,8 +24,6 @@ import {
 	DrawerContent,
 	DrawerCloseButton,
 	FormLabel,
-} from "@chakra-ui/react";
-import {
 	Slider,
 	SliderTrack,
 	SliderFilledTrack,
@@ -42,7 +37,6 @@ import SettingsContext from "../store/settingsContext";
 const Navbar = (props) => {
 	const settingsCtx = useContext(SettingsContext);
 	const [settingsCandidate, setSettingsCandidate] = useState(settingsCtx);
-
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const handleToggle = () => (isOpen ? onClose() : onOpen());
 	const btnRef = useRef();
@@ -57,9 +51,7 @@ const Navbar = (props) => {
 			setSettingsCandidate(settingsCtx);
 		} else {
 			if (clickedSave.current) {
-				const { isStatistics, isLog, isNotifications } =
-					settingsCandidate;
-				settingsCtx.updateToggles(isStatistics, isLog, isNotifications);
+				settingsCtx.updateToggles(settingsCandidate);
 			}
 		}
 	}, [isOpen]);
@@ -133,66 +125,135 @@ const Navbar = (props) => {
 					<DrawerHeader>Configure Pomodoro</DrawerHeader>
 
 					<DrawerBody>
-						<Text>Pomodoro length (in minutes)</Text>
-						<NumberInput>
-							<NumberInputField />
-							<NumberInputStepper>
-								<NumberIncrementStepper />
-								<NumberDecrementStepper />
-							</NumberInputStepper>
-						</NumberInput>
-						<Text>Break length (in minutes)</Text>
-						<NumberInput>
-							<NumberInputField />
-							<NumberInputStepper>
-								<NumberIncrementStepper />
-								<NumberDecrementStepper />
-							</NumberInputStepper>
-						</NumberInput>
-						<Text>Display statistics</Text>
-						<Switch
-							id="isStatistics"
-							isChecked={settingsCandidate.isStatistics}
-							onChange={() => {
-								setSettingsCandidate({
-									...settingsCandidate,
-									isStatistics:
-										!settingsCandidate.isStatistics,
-								});
-							}}
-						/>
-						<Text>Display log</Text>
-						<Switch
-							id="isLog"
-							isChecked={settingsCandidate.isLog}
-							onChange={() => {
-								setSettingsCandidate({
-									...settingsCandidate,
-									isLog: !settingsCandidate.isLog,
-								});
-							}}
-						/>
-						<Text>Display notifications</Text>
-						<Switch
-							id="isNotifications"
-							isChecked={settingsCandidate.isNotifications}
-							onChange={() => {
-								setSettingsCandidate({
-									...settingsCandidate,
-									isNotifications:
-										!settingsCandidate.isNotifications,
-								});
-							}}
-						/>
-						<Text>Alarm volume</Text>
-						<Slider defaultValue={0.6} min={0} max={1} step={0.2}>
-							<SliderTrack bg="gray.200">
-								<Box position="relative" right={10} />
-								<SliderFilledTrack bg="blue.500" />
-							</SliderTrack>
-							<SliderThumb boxSize={6} borderColor="gray.200" />
-						</Slider>
+						<VStack spacing={4} align="left">
+							<Box>
+								<Text>Pomodoro length (in minutes)</Text>
+								<NumberInput
+									defaultValue={
+										+settingsCandidate.pomodoroDuration / 60
+									}
+									min={1}
+									max={60}
+									onChange={(val) => {
+										setSettingsCandidate({
+											...settingsCandidate,
+											pomodoroDuration: val * 60,
+										});
+									}}
+								>
+									<NumberInputField />
+									<NumberInputStepper>
+										<NumberIncrementStepper />
+										<NumberDecrementStepper />
+									</NumberInputStepper>
+								</NumberInput>
+							</Box>
+							<Box>
+								<Text>Break length (in minutes)</Text>
+								<NumberInput
+									defaultValue={
+										+settingsCandidate.breakDuration / 60
+									}
+									min={1}
+									max={15}
+									onChange={(val) => {
+										setSettingsCandidate({
+											...settingsCandidate,
+											breakDuration: val * 60,
+										});
+									}}
+								>
+									<NumberInputField />
+									<NumberInputStepper>
+										<NumberIncrementStepper />
+										<NumberDecrementStepper />
+									</NumberInputStepper>
+								</NumberInput>
+							</Box>
+							<Box>
+								<Text>Display statistics</Text>
+								<Switch
+									id="isStatistics"
+									isChecked={settingsCandidate.isStatistics}
+									onChange={() => {
+										setSettingsCandidate({
+											...settingsCandidate,
+											isStatistics:
+												!settingsCandidate.isStatistics,
+										});
+									}}
+								/>
+							</Box>
+							<Box>
+								<Text>Display log</Text>
+								<Switch
+									id="isLog"
+									isChecked={settingsCandidate.isLog}
+									onChange={() => {
+										setSettingsCandidate({
+											...settingsCandidate,
+											isLog: !settingsCandidate.isLog,
+										});
+									}}
+								/>
+							</Box>
+							<Box>
+								<Text>Display notifications</Text>
+								<Switch
+									id="isNotifications"
+									isChecked={
+										settingsCandidate.isNotifications
+									}
+									onChange={() => {
+										setSettingsCandidate({
+											...settingsCandidate,
+											isNotifications:
+												!settingsCandidate.isNotifications,
+										});
+									}}
+								/>
+							</Box>
+							<Box>
+								<Text>Alarm volume</Text>
+								<Slider
+									min={0}
+									max={1}
+									step={0.2}
+									defaultValue={settingsCandidate.audioVolume}
+									onChangeEnd={(val) => {
+										setSettingsCandidate({
+											...settingsCandidate,
+											audioVolume: val,
+										});
+									}}
+								>
+									<SliderTrack bg="gray.200">
+										<Box position="relative" right={10} />
+										<SliderFilledTrack bg="blue.500" />
+									</SliderTrack>
+									<SliderThumb
+										boxSize={6}
+										borderColor="gray.200"
+									/>
+								</Slider>
+							</Box>
+						</VStack>
 					</DrawerBody>
+
+					<DrawerFooter>
+						<Button variant="outline" mr={3} onClick={onClose}>
+							Cancel
+						</Button>
+						<Button
+							colorScheme="black"
+							onClick={() => {
+								clickedSave.current = true;
+								onClose();
+							}}
+						>
+							Save
+						</Button>
+					</DrawerFooter>
 				</DrawerContent>
 			</Drawer>
 		</Flex>
