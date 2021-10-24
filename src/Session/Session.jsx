@@ -29,6 +29,10 @@ const SESSION_STATUS = {
 		status: "initial",
 		before: "",
 	},
+	reset: {
+		status: "initial",
+		before: "",
+	},
 };
 
 const Session = (props) => {
@@ -56,8 +60,11 @@ const Session = (props) => {
 		});
 	};
 	const resetPomodoro = () => {
-		setSessionStatus(SESSION_STATUS.initial);
-		props.reset();
+		setSessionStatus({
+			...SESSION_STATUS.paused,
+			before: SESSION_STATUS.working.status,
+		});
+		setTimestamp(0);
 	};
 
 	/* On load */
@@ -129,6 +136,12 @@ const Session = (props) => {
 				onAction(new SessionObject("PAUSE_START", timestamp));
 				break;
 			case SESSION_STATUS.initial.status:
+				onAction({
+					type: "INITIAL",
+				});
+				setTimestamp(0);
+				break;
+			case SESSION_STATUS.reset.status:
 				onAction({
 					type: "RESET",
 				});

@@ -9,6 +9,7 @@ import SettingsContext from "./store/settingsContext";
 
 function App() {
 	const settingsCtx = useContext(SettingsContext);
+	const storedLog = JSON.parse(localStorage.getItem("log")) || [];
 
 	/* Get action */
 	const pomodoroActionsReducer = (pomodoroActions, sessionAction) => {
@@ -28,6 +29,8 @@ function App() {
 					);
 				}
 				return [sessionAction, ...pomodoroActions];
+			case "INITIAL":
+				return storedLog;
 			case "RESET":
 				return [];
 			default:
@@ -36,10 +39,11 @@ function App() {
 	};
 	const [pomodoroActionItems, updatePomodoroActionItems] = useReducer(
 		pomodoroActionsReducer,
-		[]
+		storedLog
 	);
 
 	const resetActionsList = () => {
+		localStorage.removeItem("log");
 		updatePomodoroActionItems({
 			type: "RESET",
 		});
@@ -50,14 +54,14 @@ function App() {
 			<Navbar />
 			<Container maxW="container.lg" centerContent p={6}>
 				<VStack w="100%">
-					<Session
-						onAction={updatePomodoroActionItems}
-						reset={resetActionsList}
-					/>
+					<Session onAction={updatePomodoroActionItems} />
 					<Divider borderColor="gray.200" />
 					{settingsCtx.isStatistics && (
 						<React.Fragment>
-							<SessionStats newAction={pomodoroActionItems[0]} />
+							<SessionStats
+								newAction={pomodoroActionItems[0]}
+								actionsList={pomodoroActionItems}
+							/>
 							<Divider borderColor="gray.200" />
 						</React.Fragment>
 					)}

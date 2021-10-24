@@ -9,6 +9,25 @@ const SessionStats = (props) => {
 	const [pausedLength, setPausedLength] = useState(0);
 
 	useEffect(() => {
+		console.log(props.actionsList);
+		setWorkingLength(
+			props.actionsList
+				.filter((item) => item.type === "WORKING_END")
+				.reduce((sum, current) => sum + current["timestamp"], 0)
+		);
+		setRestingLength(
+			props.actionsList
+				.filter((item) => item.type === "BREAK_END")
+				.reduce((sum, current) => sum + current["timestamp"], 0)
+		);
+		setPausedLength(
+			props.actionsList
+				.filter((item) => item.type === "PAUSE_END")
+				.reduce((sum, current) => sum + current["timestamp"], 0)
+		);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
 		if (props.newAction) {
 			switch (props.newAction.type) {
 				case "WORKING_END":

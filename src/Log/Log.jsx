@@ -5,7 +5,7 @@ import { VscClearAll } from "react-icons/vsc";
 import LogItem from "./LogItem";
 
 const Log = (props) => {
-	const actionItems = props.items
+	const actionArray = props.items
 		.filter((action) => {
 			return ["WORKING_END", "PAUSE_END", "BREAK_END"].includes(
 				action.type
@@ -13,8 +13,14 @@ const Log = (props) => {
 		})
 		.filter((action) => {
 			return action.type !== "PAUSE_END" || action.pauseLength > 30;
-		})
-		.map((action) => <LogItem key={action.key} action={action} />);
+		});
+	if (actionArray.length !== 0) {
+		localStorage.setItem("log", JSON.stringify(actionArray));
+	}
+
+	const logItems = actionArray.map((action) => (
+		<LogItem key={action.key} action={action} />
+	));
 
 	return (
 		<Box w="100%">
@@ -29,7 +35,7 @@ const Log = (props) => {
 				</Button>
 			</Box>
 			<Box display="flex" flexDirection="column">
-				{actionItems}
+				{logItems}
 			</Box>
 		</Box>
 	);
