@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 
 import { Button, ButtonGroup, Box, Heading } from "@chakra-ui/react";
 import { VscDebugStart, VscDebugPause, VscDebugRestart } from "react-icons/vsc";
+import { RiSkipForwardLine } from "react-icons/ri";
 
 import tomatoLogo from "../assets/tomato.png";
 import alarmSound from "../assets/alarm.mp3";
@@ -66,6 +67,16 @@ const Session = (props) => {
 		});
 		setTimestamp(0);
 	};
+	const skipBreak = () => {
+		onAction(
+			new SessionObject(
+				"BREAK_END",
+				settingsCtx.breakDuration - timestamp
+			)
+		);
+		setTimestamp(0);
+		setSessionStatus(SESSION_STATUS.working);
+	};
 
 	/* On load */
 	useEffect(() => {
@@ -83,7 +94,10 @@ const Session = (props) => {
 	useEffect(() => {
 		document.title = `(${calculateMinSec(timestamp)}) Pomodoro Timer`;
 
-		if (timestamp === settingsCtx.pomodoroDuration) {
+		if (
+			sessionStatus.status === SESSION_STATUS.working.status &&
+			timestamp >= settingsCtx.pomodoroDuration
+		) {
 			/* Work session completed */
 			if (settingsCtx.isNotifications) {
 				new Notification("Pomodoro Timer", {
@@ -189,12 +203,24 @@ const Session = (props) => {
 				</Button>
 				<Button
 					colorScheme="gray"
-					text="Reset"
 					onClick={resetPomodoro}
 					leftIcon={<VscDebugRestart />}
 					shadow="md"
 				>
 					Reset
+				</Button>
+				<Button
+					colorScheme="blue"
+					onClick={skipBreak}
+					leftIcon={<RiSkipForwardLine />}
+					shadow="md"
+					d={
+						sessionStatus.status === SESSION_STATUS.break.status
+							? "flex"
+							: "none"
+					}
+				>
+					Skip
 				</Button>
 			</ButtonGroup>
 		</Box>
