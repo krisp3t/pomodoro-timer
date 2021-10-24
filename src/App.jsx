@@ -10,6 +10,7 @@ import SettingsContext from "./store/settingsContext";
 function App() {
 	const settingsCtx = useContext(SettingsContext);
 
+	/* Get action */
 	const pomodoroActionsReducer = (pomodoroActions, sessionAction) => {
 		switch (sessionAction.type) {
 			case "WORKING_END":
@@ -33,17 +34,16 @@ function App() {
 				throw new Error();
 		}
 	};
+	const [pomodoroActionItems, updatePomodoroActionItems] = useReducer(
+		pomodoroActionsReducer,
+		[]
+	);
 
 	const resetActionsList = () => {
 		updatePomodoroActionItems({
 			type: "RESET",
 		});
 	};
-
-	const [pomodoroActionItems, updatePomodoroActionItems] = useReducer(
-		pomodoroActionsReducer,
-		[]
-	);
 
 	return (
 		<React.Fragment>

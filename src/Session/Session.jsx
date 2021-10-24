@@ -60,6 +60,7 @@ const Session = (props) => {
 		props.reset();
 	};
 
+	/* On load */
 	useEffect(() => {
 		/* Notifications API */
 		if (!("Notification" in window)) {
@@ -71,6 +72,7 @@ const Session = (props) => {
 		return () => clearInterval(pomodoroInterval.current);
 	}, []);
 
+	/* On complete session */
 	useEffect(() => {
 		document.title = `(${calculateMinSec(timestamp)}) Pomodoro Timer`;
 
@@ -102,8 +104,9 @@ const Session = (props) => {
 			alarm.play();
 			setSessionStatus(SESSION_STATUS.working);
 		}
-	}, [timestamp, sessionStatus.status, settingsCtx, onAction]);
+	}, [timestamp]); // eslint-disable-line react-hooks/exhaustive-deps
 
+	/* On change sessionStatus */
 	useEffect(() => {
 		clearInterval(pomodoroInterval.current);
 		switch (sessionStatus.status) {
