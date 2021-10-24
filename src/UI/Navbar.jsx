@@ -37,28 +37,33 @@ import SettingsContext from "../store/settingsContext";
 const Navbar = (props) => {
 	const settingsCtx = useContext(SettingsContext);
 	const [settingsCandidate, setSettingsCandidate] = useState(settingsCtx);
+
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const handleToggle = () => (isOpen ? onClose() : onOpen());
-	const btnRef = useRef();
-	let clickedSave = useRef(false);
-
 	const { colorMode, toggleColorMode } = useColorMode();
 	const navbarBg = useColorModeValue("gray.200", "gray.800");
 
+	const btnRef = useRef();
+	let clickedSave = useRef(false);
+
+	/* Use current settings values at open drawer */
 	useEffect(() => {
 		if (isOpen) {
 			clickedSave.current = false;
 			setSettingsCandidate(settingsCtx);
-		} else {
-			if (clickedSave.current) {
-				localStorage.setItem(
-					"userPreferences",
-					JSON.stringify(settingsCandidate)
-				);
-				settingsCtx.updateToggles(settingsCandidate);
-			}
 		}
-	}, [isOpen]);
+	}, [isOpen, settingsCtx]);
+
+	/* Save drawer */
+	useEffect(() => {
+		if (!isOpen && clickedSave.current) {
+			localStorage.setItem(
+				"userPreferences",
+				JSON.stringify(settingsCandidate)
+			);
+			settingsCtx.updateToggles(settingsCandidate);
+		}
+	}, [isOpen, settingsCtx, settingsCandidate]);
 
 	return (
 		<Flex

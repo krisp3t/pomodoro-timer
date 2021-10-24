@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import SettingsContext from "./settingsContext";
 
 const SettingsProvider = (props) => {
 	const userPreferences = JSON.parse(localStorage.getItem("userPreferences"));
-	console.log("user", userPreferences);
 
 	const [statistics, setStatistics] = useState(true);
 	const [log, setLog] = useState(true);
@@ -13,28 +12,37 @@ const SettingsProvider = (props) => {
 	const [pomodoroDuration, setPomodoroDuration] = useState(1500);
 	const [breakDuration, setBreakDuration] = useState(300);
 
-	const settingsContext = {
-		pomodoroDuration: pomodoroDuration,
-		breakDuration: breakDuration,
-		audioVolume: audioVolume,
-		isStatistics: statistics,
-		isLog: log,
-		isNotifications: notifications,
-		updateToggles: (obj) => {
-			setStatistics(obj.isStatistics);
-			setLog(obj.isLog);
-			setNotifications(obj.isNotifications);
-			setAudioVolume(obj.audioVolume);
-			setPomodoroDuration(obj.pomodoroDuration);
-			setBreakDuration(obj.breakDuration);
-		},
-	};
+	const settingsContext = useMemo(() => {
+		return {
+			pomodoroDuration: pomodoroDuration,
+			breakDuration: breakDuration,
+			audioVolume: audioVolume,
+			isStatistics: statistics,
+			isLog: log,
+			isNotifications: notifications,
+			updateToggles: (obj) => {
+				setStatistics(obj.isStatistics);
+				setLog(obj.isLog);
+				setNotifications(obj.isNotifications);
+				setAudioVolume(obj.audioVolume);
+				setPomodoroDuration(obj.pomodoroDuration);
+				setBreakDuration(obj.breakDuration);
+			},
+		};
+	}, [
+		pomodoroDuration,
+		breakDuration,
+		audioVolume,
+		statistics,
+		log,
+		notifications,
+	]);
 
 	useEffect(() => {
 		if (userPreferences) {
 			settingsContext.updateToggles(userPreferences);
 		}
-	}, []);
+	}, [settingsContext, userPreferences]);
 
 	return (
 		<SettingsContext.Provider value={settingsContext}>

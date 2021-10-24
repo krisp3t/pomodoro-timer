@@ -36,6 +36,7 @@ const Session = (props) => {
 	const [sessionStatus, setSessionStatus] = useState(SESSION_STATUS.initial);
 	const pomodoroInterval = useRef();
 	const settingsCtx = useContext(SettingsContext);
+	const { onAction } = props;
 	alarm.volume = settingsCtx.audioVolume;
 
 	const startPomodoro = () => {
@@ -81,7 +82,7 @@ const Session = (props) => {
 					icon: tomatoLogo,
 				});
 			}
-			props.onAction(
+			onAction(
 				new SessionObject("WORKING_END", settingsCtx.pomodoroDuration)
 			);
 			alarm.play();
@@ -97,13 +98,11 @@ const Session = (props) => {
 					icon: tomatoLogo,
 				});
 			}
-			props.onAction(
-				new SessionObject("BREAK_END", settingsCtx.breakDuration)
-			);
+			onAction(new SessionObject("BREAK_END", settingsCtx.breakDuration));
 			alarm.play();
 			setSessionStatus(SESSION_STATUS.working);
 		}
-	}, [timestamp]);
+	}, [timestamp, sessionStatus.status, settingsCtx, onAction]);
 
 	useEffect(() => {
 		clearInterval(pomodoroInterval.current);
@@ -113,7 +112,7 @@ const Session = (props) => {
 					() => setTimestamp((seconds) => seconds + 1),
 					1000
 				);
-				props.onAction(new SessionObject("PAUSE_END", timestamp));
+				onAction(new SessionObject("PAUSE_END", timestamp));
 				break;
 			case SESSION_STATUS.break.status:
 				if (sessionStatus.before !== "paused")
@@ -124,10 +123,10 @@ const Session = (props) => {
 				);
 				break;
 			case SESSION_STATUS.paused.status:
-				props.onAction(new SessionObject("PAUSE_START", timestamp));
+				onAction(new SessionObject("PAUSE_START", timestamp));
 				break;
 			case SESSION_STATUS.initial.status:
-				props.onAction({
+				onAction({
 					type: "RESET",
 				});
 				setTimestamp(0);
@@ -135,7 +134,7 @@ const Session = (props) => {
 			default:
 				return;
 		}
-	}, [sessionStatus]);
+	}, [sessionStatus]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<Box pb={10} textAlign="center">
