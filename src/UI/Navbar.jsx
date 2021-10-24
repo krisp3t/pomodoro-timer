@@ -70,17 +70,25 @@ const Navbar = (props) => {
 			as="nav"
 			justify="space-between"
 			wrap="wrap"
-			padding={6}
+			p={{ base: 4, md: 6 }}
+			pt={{ base: 2, md: 6 }}
 			bg={navbarBg}
 		>
 			<Flex
 				align="flex-start"
 				justifyContent="center"
 				mr={5}
-				cursor="pointer"
+				pb={{ base: 4, md: 0 }}
 				w={{ base: "100%", md: "auto" }}
 			>
-				<Icon as={GiTomato} w={10} h={10} mr={3} color="red.500" />
+				<Icon
+					as={GiTomato}
+					w={10}
+					h={10}
+					mr={3}
+					color="red.500"
+					cursor="pointer"
+				/>
 				<Box>
 					<Heading
 						as="h1"
@@ -91,6 +99,7 @@ const Navbar = (props) => {
 						h={10}
 						bgGradient="linear(to-l, #7928CA, red.500)"
 						bgClip="text"
+						cursor="pointer"
 					>
 						Pomodoro Timer
 					</Heading>
@@ -100,6 +109,7 @@ const Navbar = (props) => {
 			<Box
 				d="flex"
 				w={{ base: "100%", md: "auto" }}
+				px={{ base: 6, md: 0 }}
 				justifyContent={{ base: "space-between", md: "inherit" }}
 			>
 				<Box d="flex" flexDir="column" alignItems="center" mr={10}>
