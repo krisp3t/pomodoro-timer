@@ -161,7 +161,7 @@ const Navbar = (props) => {
 									onChange={(val) => {
 										setSettingsCandidate({
 											...settingsCandidate,
-											pomodoroDuration: val * 60,
+											pomodoroDuration: val * 60000,
 										});
 									}}
 								>
@@ -183,7 +183,7 @@ const Navbar = (props) => {
 									onChange={(val) => {
 										setSettingsCandidate({
 											...settingsCandidate,
-											breakDuration: val * 60,
+											breakDuration: val * 60000,
 										});
 									}}
 								>

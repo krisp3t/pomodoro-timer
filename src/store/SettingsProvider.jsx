@@ -9,8 +9,8 @@ const SettingsProvider = (props) => {
 	const [log, setLog] = useState(true);
 	const [notifications, setNotifications] = useState(true);
 	const [audioVolume, setAudioVolume] = useState(0.6);
-	const [pomodoroDuration, setPomodoroDuration] = useState(1500);
-	const [breakDuration, setBreakDuration] = useState(300);
+	const [pomodoroDuration, setPomodoroDuration] = useState(1500000);
+	const [breakDuration, setBreakDuration] = useState(300000);
 
 	const settingsContext = useMemo(() => {
 		return {

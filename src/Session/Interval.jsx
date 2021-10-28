@@ -6,9 +6,14 @@ export const calculateMinSec = (timestamp) => {
 	const seconds = timestamp % 60;
 	return `${formatTime(minutes)}:${formatTime(seconds)}`;
 };
+export const timestampToOutput = (timestamp) => {
+	return calculateMinSec(Math.floor(timestamp / 1000));
+};
 
 const Interval = (props) => {
-	return <React.Fragment>{calculateMinSec(props.timestamp)}</React.Fragment>;
+	return (
+		<React.Fragment>{timestampToOutput(props.timestamp)}</React.Fragment>
+	);
 };
 
 export default Interval;
