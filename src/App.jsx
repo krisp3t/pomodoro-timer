@@ -13,6 +13,7 @@ import SessionStats from "./Stats/SessionStats";
 import Log from "./Log/Log";
 import SettingsContext from "./store/settingsContext";
 import SettingsProvider from "./store/SettingsProvider";
+import SessionObject from "./Session/SessionObject";
 import { timestampToOutput } from "./Session/Interval";
 
 const SESSION_STATE = {
@@ -39,10 +40,22 @@ function App() {
 	const [timestamp, setTimestamp] = useState(0);
 	const timerRef = useRef();
 	const timestampStartPoint = useRef();
+	const sessionStartTime = useRef({
+		working: 10,
+		break: 10,
+		pause: 10,
+	});
 
 	const [sessionState, setSessionState] = useState(SESSION_STATE.initial);
 
-	console.log("timestamp =", timestamp, "sessionState =", sessionState);
+	console.log(
+		"timestamp =",
+		timestamp,
+		"sessionState =",
+		sessionState,
+		"sessionStartTime =",
+		sessionStartTime.current
+	);
 
 	const startButtonHandler = () => {
 		if (sessionState.before) {
@@ -54,6 +67,7 @@ function App() {
 	};
 
 	const pauseButtonHandler = () => {
+		sessionStartTime.current.pause = Date.now();
 		setSessionState({
 			...SESSION_STATE.paused,
 			before: sessionState,
@@ -67,13 +81,34 @@ function App() {
 
 	const clearLogHandler = () => {
 		localStorage.removeItem("log");
+		updateActionItems({ type: "RESET" });
 	};
+
+	/* Get action */
+	const actionsReducer = (actionsArray, newAction) => {
+		switch (newAction.type) {
+			case "WORKING_END":
+			case "BREAK_END":
+			case "PAUSE_END":
+				return [newAction, ...actionsArray];
+			case "RESET":
+				return [];
+			default:
+				throw new Error();
+		}
+	};
+	const [actionItems, updateActionItems] = useReducer(
+		actionsReducer,
+		storedLog
+	);
 
 	if (
 		sessionState.status === SESSION_STATE.working.status &&
 		timestamp > settingsCtx.pomodoroDuration
 	) {
 		console.log("Work completed");
+		const startTime = +sessionStartTime.current.working;
+		updateActionItems(new SessionObject("WORKING_END", startTime));
 		setSessionState(SESSION_STATE.break);
 		setTimestamp(settingsCtx.breakDuration);
 	} else if (
@@ -81,6 +116,8 @@ function App() {
 		timestamp === 0
 	) {
 		console.log("Break completed");
+		const startTime = +sessionStartTime.current.break;
+		updateActionItems(new SessionObject("BREAK_END", startTime));
 		setSessionState(SESSION_STATE.working);
 	}
 
@@ -89,12 +126,14 @@ function App() {
 		switch (sessionState.status) {
 			case SESSION_STATE.working.status:
 				timestampStartPoint.current = Date.now();
+				sessionStartTime.current.working = timestampStartPoint.current;
 				timerRef.current = setInterval(() => {
 					// setTimestamp(Date.now() - timestampStartPoint.current);
 					setTimestamp((prev) => prev + 100000);
 				}, 1000);
 				break;
 			case SESSION_STATE.break.status:
+				sessionStartTime.current.break = Date.now();
 				timestampStartPoint.current =
 					Date.now() + settingsCtx.breakDuration;
 				timerRef.current = setInterval(() => {
@@ -111,38 +150,9 @@ function App() {
 	}, [sessionState, settingsCtx]);
 	useEffect(() => {
 		document.title = `(${timestampToOutput(timestamp)}) Pomodoro Timer`;
-	}, [timestamp, settingsCtx, sessionState]);
-	/* Get action */
-	const pomodoroActionsReducer = (pomodoroActions, sessionAction) => {
-		console.log(pomodoroActions);
-		switch (sessionAction.type) {
-			case "WORKING_END":
-				return [sessionAction, ...pomodoroActions];
-			case "BREAK_END":
-				pomodoroActions[0].break = true;
-				return [sessionAction, ...pomodoroActions];
-			case "PAUSE_START":
-				return [sessionAction, ...pomodoroActions];
-			case "PAUSE_END":
-				if (pomodoroActions[0]) {
-					sessionAction.pauseLength = Math.floor(
-						(sessionAction.realTime - pomodoroActions[0].realTime) /
-							1000
-					);
-				}
-				return [sessionAction, ...pomodoroActions];
-			case "INITIAL":
-				return storedLog;
-			case "RESET":
-				return [];
-			default:
-				throw new Error();
-		}
-	};
-	const [pomodoroActionItems, updatePomodoroActionItems] = useReducer(
-		pomodoroActionsReducer,
-		storedLog
-	);
+	}, [timestamp]);
+
+	console.log("actionsArray = ", actionItems);
 
 	return (
 		<SettingsProvider value={SettingsContext}>
@@ -161,17 +171,14 @@ function App() {
 					{settingsCtx.isStatistics && (
 						<React.Fragment>
 							<SessionStats
-								newAction={pomodoroActionItems[0]}
-								actionsList={pomodoroActionItems}
+								newAction={actionItems[0]}
+								actionsList={actionItems}
 							/>
 							<Divider borderColor="gray.200" />
 						</React.Fragment>
 					)}
 					{settingsCtx.isLog && (
-						<Log
-							items={pomodoroActionItems}
-							clear={clearLogHandler}
-						/>
+						<Log items={actionItems} clear={clearLogHandler} />
 					)}
 				</VStack>
 			</Container>
