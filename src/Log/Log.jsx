@@ -8,6 +8,9 @@ const Log = (props) => {
 	const actionArray = props.items.filter((action) => {
 		return action.type !== "PAUSE_END" || action.diffTimestamp > 30000;
 	});
+	if (actionArray.length !== 0) {
+		localStorage.setItem("log", JSON.stringify(actionArray));
+	}
 
 	const logItems = actionArray.map((action) => (
 		<LogItem key={action.key} action={action} />
