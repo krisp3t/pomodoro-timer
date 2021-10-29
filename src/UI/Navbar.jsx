@@ -154,7 +154,8 @@ const Navbar = (props) => {
 								<Text>Pomodoro length (in minutes)</Text>
 								<NumberInput
 									defaultValue={
-										+settingsCandidate.pomodoroDuration / 60
+										+settingsCandidate.pomodoroDuration /
+										60000
 									}
 									min={1}
 									max={60}
@@ -176,7 +177,7 @@ const Navbar = (props) => {
 								<Text>Break length (in minutes)</Text>
 								<NumberInput
 									defaultValue={
-										+settingsCandidate.breakDuration / 60
+										+settingsCandidate.breakDuration / 60000
 									}
 									min={1}
 									max={15}

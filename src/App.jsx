@@ -12,9 +12,10 @@ import Session from "./Session/Session";
 import SessionStats from "./Stats/SessionStats";
 import Log from "./Log/Log";
 import SettingsContext from "./store/settingsContext";
-import SettingsProvider from "./store/SettingsProvider";
 import SessionObject from "./Session/SessionObject";
 import { timestampToOutput } from "./Session/Interval";
+import alarmSound from "./assets/alarm.mp3";
+import tomatoLogo from "./assets/tomato.png";
 
 const SESSION_STATE = {
 	working: {
@@ -32,10 +33,12 @@ const SESSION_STATE = {
 		status: "INITIAL",
 	},
 };
+const alarm = new Audio(alarmSound);
 
 function App() {
 	const settingsCtx = useContext(SettingsContext);
 	const storedLog = JSON.parse(localStorage.getItem("log")) || [];
+	alarm.volume = settingsCtx.audioVolume;
 
 	const [timestamp, setTimestamp] = useState(0);
 	const timerRef = useRef();
@@ -54,7 +57,9 @@ function App() {
 		"sessionState =",
 		sessionState,
 		"sessionStartTime =",
-		sessionStartTime.current
+		sessionStartTime.current,
+		"settingsCtx =",
+		settingsCtx
 	);
 
 	const startButtonHandler = () => {
@@ -105,26 +110,17 @@ function App() {
 		storedLog
 	);
 
-	if (
-		sessionState.status === SESSION_STATE.working.status &&
-		timestamp > settingsCtx.pomodoroDuration
-	) {
-		console.log("Work completed");
-		updateActionItems(
-			new SessionObject("WORKING_END", sessionStartTime.current.working)
-		);
-		setSessionState(SESSION_STATE.break);
-		setTimestamp(settingsCtx.breakDuration);
-	} else if (
-		sessionState.status === SESSION_STATE.break.status &&
-		timestamp === 0
-	) {
-		console.log("Break completed");
-		updateActionItems(
-			new SessionObject("BREAK_END", sessionStartTime.current.break)
-		);
-		setSessionState(SESSION_STATE.working);
-	}
+	/* On load */
+	useEffect(() => {
+		/* Notifications API */
+		if (!("Notification" in window)) {
+			console.log("This browser does not support desktop notifications");
+		} else {
+			Notification.requestPermission();
+		}
+		/* Cleanup */
+		return () => clearInterval(timerRef.current);
+	}, []);
 
 	useEffect(() => {
 		clearInterval(timerRef.current);
@@ -136,6 +132,7 @@ function App() {
 					// setTimestamp(Date.now() - timestampStartPoint.current);
 					setTimestamp((prev) => prev + 100000);
 				}, 1000);
+
 				break;
 			case SESSION_STATE.break.status:
 				sessionStartTime.current.break = Date.now();
@@ -153,14 +150,51 @@ function App() {
 				return;
 		}
 	}, [sessionState, settingsCtx]);
+
 	useEffect(() => {
 		document.title = `(${timestampToOutput(timestamp)}) Pomodoro Timer`;
+		if (
+			sessionState.status === SESSION_STATE.working.status &&
+			timestamp > settingsCtx.pomodoroDuration
+		) {
+			/* Work session completed */
+			updateActionItems(
+				new SessionObject(
+					"WORKING_END",
+					sessionStartTime.current.working
+				)
+			);
+			setSessionState(SESSION_STATE.break);
+			setTimestamp(settingsCtx.breakDuration);
+			console.log("Work session completed");
+			settingsCtx.isNotifications &&
+				new Notification("Pomodoro Timer", {
+					body: "Work session completed! Good work, now take a break 😉🔥",
+					icon: tomatoLogo,
+				});
+			alarm.play();
+		} else if (
+			sessionState.status === SESSION_STATE.break.status &&
+			timestamp === 0
+		) {
+			/* Break completed */
+			updateActionItems(
+				new SessionObject("BREAK_END", sessionStartTime.current.break)
+			);
+			setSessionState(SESSION_STATE.working);
+			settingsCtx.isNotifications &&
+				new Notification("Pomodoro Timer", {
+					body: "Break is over - back to hustling! 💪",
+					icon: tomatoLogo,
+				});
+			alarm.play();
+		}
 	}, [timestamp]);
 
 	console.log("actionsArray = ", actionItems);
 
 	return (
-		<SettingsProvider value={SettingsContext}>
+		<React.Fragment>
 			<Navbar />
 			<Container maxW="container.lg" centerContent p={6}>
 				<VStack w="100%">
@@ -188,7 +222,7 @@ function App() {
 					)}
 				</VStack>
 			</Container>
-		</SettingsProvider>
+		</React.Fragment>
 	);
 }
 
