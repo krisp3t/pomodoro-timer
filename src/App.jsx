@@ -41,9 +41,9 @@ function App() {
 	const timerRef = useRef();
 	const timestampStartPoint = useRef();
 	const sessionStartTime = useRef({
-		working: 10,
-		break: 10,
-		pause: 10,
+		working: 0,
+		break: 0,
+		pause: 0,
 	});
 
 	const [sessionState, setSessionState] = useState(SESSION_STATE.initial);
@@ -59,6 +59,9 @@ function App() {
 
 	const startButtonHandler = () => {
 		if (sessionState.before) {
+			updateActionItems(
+				new SessionObject("PAUSE_END", sessionStartTime.current.pause)
+			);
 			setSessionState(sessionState.before);
 			setTimestamp(sessionState.beforeTimestamp);
 			return;
@@ -107,8 +110,9 @@ function App() {
 		timestamp > settingsCtx.pomodoroDuration
 	) {
 		console.log("Work completed");
-		const startTime = +sessionStartTime.current.working;
-		updateActionItems(new SessionObject("WORKING_END", startTime));
+		updateActionItems(
+			new SessionObject("WORKING_END", sessionStartTime.current.working)
+		);
 		setSessionState(SESSION_STATE.break);
 		setTimestamp(settingsCtx.breakDuration);
 	} else if (
@@ -116,8 +120,9 @@ function App() {
 		timestamp === 0
 	) {
 		console.log("Break completed");
-		const startTime = +sessionStartTime.current.break;
-		updateActionItems(new SessionObject("BREAK_END", startTime));
+		updateActionItems(
+			new SessionObject("BREAK_END", sessionStartTime.current.break)
+		);
 		setSessionState(SESSION_STATE.working);
 	}
 
@@ -166,6 +171,7 @@ function App() {
 							onReset: resetButtonHandler,
 						}}
 						timestamp={timestamp}
+						sessionState={sessionState}
 					/>
 					<Divider borderColor="gray.200" />
 					{settingsCtx.isStatistics && (

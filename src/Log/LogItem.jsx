@@ -20,10 +20,8 @@ const ActionCompleted = (props) => {
 					color="gray.800"
 				>
 					<Text>
-						{["PAUSE_END", "BREAK_END"].includes(props.action.type)
-							? "Till "
-							: "At "}
-						{props.action.timeDisplay}
+						{props.action.startedTime} -{" "}
+						{props.action.completedTime}
 					</Text>
 				</Badge>
 				<Box d="flex" alignItems="center" m="auto">
@@ -54,7 +52,7 @@ const ActionCompleted = (props) => {
 					color="gray.800"
 				>
 					<Icon as={IoMdClock} d="inline" mr={1} />
-					{props.pauseLength || props.action.pomodoroTime}
+					{props.action.sessionLength}
 				</Badge>
 			</Box>
 		</React.Fragment>

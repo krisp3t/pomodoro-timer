@@ -11,6 +11,7 @@ class SessionObject {
 		this.type = type;
 		this.startedTimestamp = timestamp;
 		this.completedTimestamp = Date.now();
+		this.diffTimestamp = this.completedTimestamp - this.startedTimestamp;
 		this.sessionLength = timestampToOutput(
 			this.completedTimestamp - this.startedTimestamp
 		);
@@ -26,6 +27,3 @@ class SessionObject {
 }
 
 export default SessionObject;
-
-// this.startedTime = this.startedTimestamp.toTimeString().slice(0, 5);
-// this.completedTime = this.completedTimestamp.toTimeString().slice(0, 5);

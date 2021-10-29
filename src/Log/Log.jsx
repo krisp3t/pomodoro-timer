@@ -5,18 +5,9 @@ import { VscClearAll } from "react-icons/vsc";
 import LogItem from "./LogItem";
 
 const Log = (props) => {
-	const actionArray = props.items
-		.filter((action) => {
-			return ["WORKING_END", "PAUSE_END", "BREAK_END"].includes(
-				action.type
-			);
-		})
-		.filter((action) => {
-			return action.type !== "PAUSE_END" || action.pauseLength > 30;
-		});
-	if (actionArray.length !== 0) {
-		localStorage.setItem("log", JSON.stringify(actionArray));
-	}
+	const actionArray = props.items.filter((action) => {
+		return action.type !== "PAUSE_END" || action.diffTimestamp > 30000;
+	});
 
 	const logItems = actionArray.map((action) => (
 		<LogItem key={action.key} action={action} />
