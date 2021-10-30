@@ -21,38 +21,13 @@ const SessionStats = (props) => {
 		);
 		setPausedLength(
 			props.actionsList
-				.filter((item) => item.type === "PAUSE_END")
+				.filter(
+					(item) =>
+						item.type === "PAUSE_END" && item.diffTimestamp > 30000
+				)
 				.reduce((sum, current) => sum + current["diffTimestamp"], 0)
 		);
-	}, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-	useEffect(() => {
-		if (props.newAction) {
-			switch (props.newAction.type) {
-				case "WORKING_END":
-					setWorkingLength(
-						(prev) => prev + props.newAction.diffTimestamp
-					);
-					break;
-				case "BREAK_END":
-					setRestingLength(
-						(prev) => prev + props.newAction.diffTimestamp
-					);
-					break;
-				case "PAUSE_END":
-					setPausedLength(
-						(prev) => prev + props.newAction.diffTimestamp
-					);
-					break;
-				default:
-					break;
-			}
-		} else {
-			setWorkingLength(0);
-			setRestingLength(0);
-			setPausedLength(0);
-		}
-	}, [props.newAction]);
+	}, [props.actionsList]);
 
 	return (
 		<Box d="flex" w="100%" py={5}>

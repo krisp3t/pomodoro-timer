@@ -242,10 +242,7 @@ function App() {
 					<Divider borderColor="gray.200" />
 					{settingsCtx.isStatistics && (
 						<React.Fragment>
-							<SessionStats
-								newAction={actionItems[0]}
-								actionsList={actionItems}
-							/>
+							<SessionStats actionsList={actionItems} />
 							<Divider borderColor="gray.200" />
 						</React.Fragment>
 					)}
