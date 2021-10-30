@@ -43,6 +43,7 @@ function App() {
 	const [timestamp, setTimestamp] = useState(0);
 	const [sessionState, setSessionState] = useState(SESSION_STATE.initial);
 	const timerRef = useRef();
+	const skippedBreak = useRef(false);
 
 	/* Not counting pauses during session */
 	const sessionOriginalStartTimestamp = useRef({
@@ -62,9 +63,17 @@ function App() {
 					sessionOriginalStartTimestamp.current.pause
 				)
 			);
+			if (sessionState.before === SESSION_STATE.working) {
+				sessionCurrentStartTimestamp.current =
+					Date.now() - sessionState.beforeTimestamp;
+			} else if (sessionState.before === SESSION_STATE.break) {
+				/* Ending point */
+				sessionCurrentStartTimestamp.current =
+					Date.now() +
+					settingsCtx.breakDuration -
+					sessionState.beforeTimestamp;
+			}
 			setSessionState(sessionState.before);
-			sessionCurrentStartTimestamp.current =
-				Date.now() - sessionState.beforeTimestamp;
 			return;
 		}
 		/* Starting from initial state */
@@ -76,10 +85,16 @@ function App() {
 
 	const pauseButtonHandler = () => {
 		sessionOriginalStartTimestamp.current.pause = Date.now();
+		let beforeTimestamp;
+		if (sessionState === SESSION_STATE.working) {
+			beforeTimestamp = timestamp;
+		} else if (sessionState === SESSION_STATE.break) {
+			beforeTimestamp = settingsCtx.breakDuration - timestamp;
+		}
 		setSessionState({
 			...SESSION_STATE.paused,
 			before: sessionState,
-			beforeTimestamp: timestamp /* how much ms have elapsed */,
+			beforeTimestamp: beforeTimestamp /* how much ms have elapsed */,
 		});
 	};
 
@@ -89,6 +104,7 @@ function App() {
 
 	const skipButtonHandler = () => {
 		setTimestamp(0);
+		skippedBreak.current = true;
 	};
 
 	const clearLogHandler = () => {
@@ -123,12 +139,14 @@ function App() {
 		updateActionItems(
 			new SessionObject(
 				"WORKING_END",
-				sessionOriginalStartTimestamp.current.working
+				sessionOriginalStartTimestamp.current.working,
+				settingsCtx.pomodoroDuration
 			)
 		);
 		sessionOriginalStartTimestamp.current.break = Date.now();
 		sessionCurrentStartTimestamp.current =
-			sessionOriginalStartTimestamp.current.break;
+			sessionOriginalStartTimestamp.current.break +
+			settingsCtx.breakDuration;
 		setTimestamp(settingsCtx.breakDuration);
 		setSessionState(SESSION_STATE.break);
 		settingsCtx.isNotifications &&
@@ -139,13 +157,14 @@ function App() {
 		alarm.play();
 	} else if (
 		sessionState.status === SESSION_STATE.break.status &&
-		timestamp === 0
+		timestamp <= 0
 	) {
 		/* Break completed */
 		updateActionItems(
 			new SessionObject(
 				"BREAK_END",
-				sessionOriginalStartTimestamp.current.break
+				sessionOriginalStartTimestamp.current.break,
+				skippedBreak.current ? null : settingsCtx.breakDuration
 			)
 		);
 		sessionOriginalStartTimestamp.current.working = Date.now();
@@ -175,6 +194,7 @@ function App() {
 	/* On state change */
 	useEffect(() => {
 		clearInterval(timerRef.current);
+		skippedBreak.current = false;
 		switch (sessionState.status) {
 			case SESSION_STATE.working.status:
 				timerRef.current = setInterval(() => {
@@ -187,11 +207,10 @@ function App() {
 			case SESSION_STATE.break.status:
 				timerRef.current = setInterval(() => {
 					setTimestamp(
-						sessionCurrentStartTimestamp.current +
-							settingsCtx.breakDuration -
-							Date.now()
+						sessionCurrentStartTimestamp.current - Date.now()
 					);
 				}, 1000);
+
 				break;
 			case SESSION_STATE.initial.status:
 				setTimestamp(0);

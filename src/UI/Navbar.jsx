@@ -157,8 +157,9 @@ const Navbar = (props) => {
 										+settingsCandidate.pomodoroDuration /
 										60000
 									}
-									min={1}
+									min={5}
 									max={60}
+									step={1}
 									onChange={(val) => {
 										setSettingsCandidate({
 											...settingsCandidate,
@@ -181,6 +182,7 @@ const Navbar = (props) => {
 									}
 									min={1}
 									max={15}
+									step={1}
 									onChange={(val) => {
 										setSettingsCandidate({
 											...settingsCandidate,

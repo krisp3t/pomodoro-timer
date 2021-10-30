@@ -7,15 +7,15 @@ const sessionColors = {
 };
 
 class SessionObject {
-	constructor(type, timestamp) {
+	constructor(type, timestamp, sessionLength) {
 		this.type = type; /* WORKING_END, BREAK_END, PAUSE_END */
 		this.startedTimestamp = timestamp; /* Date.now() at session start */
 		this.completedTimestamp = Date.now();
 		this.diffTimestamp =
 			this.completedTimestamp - this.startedTimestamp; /* ms */
 		this.sessionLength = timestampToOutput(
-			this.completedTimestamp - this.startedTimestamp
-		); /* minutes:seconds */
+			sessionLength ?? this.completedTimestamp - this.startedTimestamp
+		);
 		this.startedTime = new Date(this.startedTimestamp)
 			.toTimeString()
 			.slice(0, 5); /* minutes:seconds */
