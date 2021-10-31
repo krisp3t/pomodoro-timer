@@ -12,10 +12,9 @@ class SessionObject {
 		this.startedTimestamp = timestamp; /* Date.now() at session start */
 		this.completedTimestamp = Date.now();
 		this.diffTimestamp =
+			sessionLength ??
 			this.completedTimestamp - this.startedTimestamp; /* ms */
-		this.sessionLength = timestampToOutput(
-			sessionLength ?? this.completedTimestamp - this.startedTimestamp
-		);
+		this.sessionLength = timestampToOutput(this.diffTimestamp);
 		this.startedTime = new Date(this.startedTimestamp)
 			.toTimeString()
 			.slice(0, 5); /* minutes:seconds */
