@@ -103,8 +103,8 @@ function App() {
 	};
 
 	const skipButtonHandler = () => {
-		setTimestamp(0);
 		skippedBreak.current = true;
+		setTimestamp(0);
 	};
 
 	const clearLogHandler = () => {
@@ -164,8 +164,13 @@ function App() {
 			new SessionObject(
 				"BREAK_END",
 				sessionOriginalStartTimestamp.current.break,
-				skippedBreak.current ? null : settingsCtx.breakDuration
+				skippedBreak.current &&
+				sessionOriginalStartTimestamp.current <
+					settingsCtx.breakDuration
+					? null
+					: settingsCtx.breakDuration
 			)
+			/* If skipped break, check if break length < breakDuration, otherwise count as breakDuration */
 		);
 		sessionOriginalStartTimestamp.current.working = Date.now();
 		sessionCurrentStartTimestamp.current =
