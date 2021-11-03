@@ -165,8 +165,9 @@ function App() {
 				"BREAK_END",
 				sessionOriginalStartTimestamp.current.break,
 				skippedBreak.current &&
-				sessionOriginalStartTimestamp.current <
-					settingsCtx.breakDuration
+				sessionOriginalStartTimestamp.current.break +
+					settingsCtx.breakDuration >
+					sessionCurrentStartTimestamp.current
 					? null
 					: settingsCtx.breakDuration
 			)
