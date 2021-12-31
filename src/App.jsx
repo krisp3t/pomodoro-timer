@@ -9,7 +9,7 @@ import { Container, Divider, VStack } from "@chakra-ui/layout";
 
 import Navbar from "./UI/Navbar";
 import Session from "./Session/Session";
-import SessionStats from "./Stats/SessionStats";
+import Stats from "./Stats/Stats";
 import Log from "./Log/Log";
 import SettingsContext from "./store/settingsContext";
 import SessionObject from "./Session/SessionObject";
@@ -248,7 +248,7 @@ function App() {
 					<Divider borderColor="gray.200" />
 					{settingsCtx.isStatistics && (
 						<React.Fragment>
-							<SessionStats actionsList={actionItems} />
+							<Stats actionsList={actionItems} />
 							<Divider borderColor="gray.200" />
 						</React.Fragment>
 					)}
