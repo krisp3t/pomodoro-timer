@@ -12,6 +12,10 @@ import {
 import {VStack} from "@chakra-ui/layout";
 
 export default function SettingsDrawer(props) {
+    function updateSettings() {
+        console.log("// TODO");
+    }
+
     return (
         <Drawer
             placement="right"
@@ -36,7 +40,7 @@ export default function SettingsDrawer(props) {
                     <Button
                         colorScheme="black"
                         onClick={() => {
-                            props.updateSettings();
+                            updateSettings();
                             props.onClose();
                         }}
                     >

@@ -1,6 +1,8 @@
-import {Box, FormLabel, Switch} from "@chakra-ui/react";
+import {Box, FormLabel, Switch, useColorMode} from "@chakra-ui/react";
 
-export default function DarkModeToggle(props) {
+export default function DarkModeToggle() {
+    const {colorMode, toggleColorMode} = useColorMode();
+
     return (
         <Box
             display="flex"
@@ -12,6 +14,8 @@ export default function DarkModeToggle(props) {
                 <Switch
                     id="colorModeSwitch"
                     size="md"
+                    isChecked={colorMode === "dark"}
+                    onChange={toggleColorMode}
                 />
                 <FormLabel fontSize="sm" m={0}>
                     Dark Mode

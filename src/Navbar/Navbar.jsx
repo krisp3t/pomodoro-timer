@@ -8,14 +8,10 @@ import {
 import NavbarLogo from "./NavbarLogo";
 import DarkModeToggle from "./DarkModeToggle";
 import SettingsButton from "./SettingsButton";
-import SettingsDrawer from "./SettingsDrawer";
+import SettingsDrawer from "./SettingsDrawer/SettingsDrawer";
 
 
 export default function Navbar() {
-    function updateSettings() {
-        console.log("// TODO");
-    }
-
     const bgColor = useColorModeValue("gray.200", "gray.800");
     const {isOpen, onOpen, onClose} = useDisclosure();
 
@@ -40,7 +36,7 @@ export default function Navbar() {
                 <SettingsButton onClick={onOpen}/>
             </Box>
 
-            <SettingsDrawer isOpen={isOpen} onOpen={onOpen} onClose={onClose} updateSettings={updateSettings}/>
+            <SettingsDrawer isOpen={isOpen} onOpen={onOpen} onClose={onClose}/>
         </Flex>
     );
 };
