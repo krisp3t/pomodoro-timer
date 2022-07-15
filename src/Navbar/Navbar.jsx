@@ -3,14 +3,21 @@ import {
     Box,
     Flex,
     useColorModeValue,
+    useDisclosure
 } from "@chakra-ui/react";
 import NavbarLogo from "./NavbarLogo";
 import DarkModeToggle from "./DarkModeToggle";
-import SettingsButton from "./Settings";
+import SettingsButton from "./SettingsButton";
+import SettingsDrawer from "./SettingsDrawer";
 
 
 export default function Navbar() {
+    function updateSettings() {
+        console.log("// TODO");
+    }
+
     const bgColor = useColorModeValue("gray.200", "gray.800");
+    const {isOpen, onOpen, onClose} = useDisclosure();
 
     return (
         <Flex
@@ -30,8 +37,10 @@ export default function Navbar() {
                 justifyContent={{base: "space-between", md: "inherit"}}
             >
                 <DarkModeToggle/>
-                <SettingsButton/>
+                <SettingsButton onClick={onOpen}/>
             </Box>
+
+            <SettingsDrawer isOpen={isOpen} onOpen={onOpen} onClose={onClose} updateSettings={updateSettings}/>
         </Flex>
     );
 };

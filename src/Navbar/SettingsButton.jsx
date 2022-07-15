@@ -10,6 +10,7 @@ export default function SettingsButton(props) {
             colorScheme="black"
             fontWeight="500"
             shadow="md"
+            onClick={props.onClick}
         >
             Settings
         </Button>
