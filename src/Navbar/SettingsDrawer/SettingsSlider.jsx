@@ -2,13 +2,13 @@ import React from "react";
 import {Box, Slider, SliderFilledTrack, SliderThumb, SliderTrack} from "@chakra-ui/react";
 
 
-export default function SettingsSlider() {
+export default function SettingsSlider(props) {
     return (
         <Slider
             min={0}
             max={1}
             step={0.2}
-            // TODO: settingsCtx
+            defaultValue={props.value}
         >
             <SliderTrack bg="gray.200">
                 <Box position="relative" right={10}/>

@@ -1,6 +1,5 @@
-import React from "react";
+import React, {useContext, useState} from "react";
 import {
-    Box,
     Button,
     Drawer,
     DrawerBody,
@@ -8,16 +7,24 @@ import {
     DrawerContent,
     DrawerFooter,
     DrawerHeader,
-    DrawerOverlay, Text
+    DrawerOverlay,
+    FormControl,
+    FormLabel,
+    VStack
 } from "@chakra-ui/react";
-import {VStack} from "@chakra-ui/layout";
 import SettingsNumberInput from "./SettingsNumberInput";
 import SettingsSlider from "./SettingsSlider";
 import SettingsSwitch from "./SettingsSwitch";
+import SettingsContext from "../../store/settingsContext";
 
 export default function SettingsDrawer(props) {
+    const settingsCtx = useContext(SettingsContext);
+    const [settingsCandidate, setSettingsCandidate] = useState(settingsCtx);
+
+    console.log(settingsCtx); // TODO: remove
+
     function updateSettings() {
-        console.log("// TODO");
+        // TODO
     }
 
     return (
@@ -33,30 +40,34 @@ export default function SettingsDrawer(props) {
 
                 <DrawerBody>
                     <VStack spacing={4} align="left">
-                        <Box>
-                            <Text>Pomodoro length (minutes)</Text>
-                            <SettingsNumberInput/>
-                        </Box>
-                        <Box>
-                            <Text>Break length (minutes)</Text>
-                            <SettingsNumberInput/>
-                        </Box>
-                        <Box>
-                            <Text>Display statistics</Text>
-                            <SettingsSwitch/>
-                        </Box>
-                        <Box>
-                            <Text>Display log</Text>
-                            <SettingsSwitch/>
-                        </Box>
-                        <Box>
-                            <Text>Display notifications</Text>
-                            <SettingsSwitch/>
-                        </Box>
-                        <Box>
-                            <Text>Alarm volume</Text>
-                            <SettingsSlider/>
-                        </Box>
+                        <FormControl>
+                            <FormLabel>Pomodoro length (minutes)</FormLabel>
+                            <SettingsNumberInput value={settingsCandidate.pomodoroDuration} min="5" max="120"/>
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Short break length (minutes)</FormLabel>
+                            <SettingsNumberInput value={settingsCandidate.breakDuration} min="1" max="15"/>
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Long break length (minutes)</FormLabel>
+                            <SettingsNumberInput value={settingsCandidate.breakDuration} min="1" max="15"/>
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Display statistics</FormLabel>
+                            <SettingsSwitch value={settingsCandidate.isStatistics}/>
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Display log</FormLabel>
+                            <SettingsSwitch value={settingsCandidate.isLog}/>
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Display notifications</FormLabel>
+                            <SettingsSwitch value={settingsCandidate.isNotifications}/>
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Alarm volume</FormLabel>
+                            <SettingsSlider value={settingsCandidate.audioVolume}/>
+                        </FormControl>
                     </VStack>
                 </DrawerBody>
 

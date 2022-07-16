@@ -8,15 +8,14 @@ import {
 } from "@chakra-ui/react";
 
 
-export default function SettingsNumberInput() {
+export default function SettingsNumberInput(props) {
     return (
-
         <NumberInput
             defaultValue={
-                30000
-            } // TODO: settingsCtx
-            min={5}
-            max={60}
+                props.value / 60000
+            }
+            min={props.min}
+            max={props.max}
             step={1}
         >
             <NumberInputField/>
