@@ -1,5 +1,6 @@
 import React from "react";
 import {
+    Box,
     Button,
     Drawer,
     DrawerBody,
@@ -7,9 +8,12 @@ import {
     DrawerContent,
     DrawerFooter,
     DrawerHeader,
-    DrawerOverlay
+    DrawerOverlay, Text
 } from "@chakra-ui/react";
 import {VStack} from "@chakra-ui/layout";
+import SettingsNumberInput from "./SettingsNumberInput";
+import SettingsSlider from "./SettingsSlider";
+import SettingsSwitch from "./SettingsSwitch";
 
 export default function SettingsDrawer(props) {
     function updateSettings() {
@@ -29,7 +33,30 @@ export default function SettingsDrawer(props) {
 
                 <DrawerBody>
                     <VStack spacing={4} align="left">
-
+                        <Box>
+                            <Text>Pomodoro length (minutes)</Text>
+                            <SettingsNumberInput/>
+                        </Box>
+                        <Box>
+                            <Text>Break length (minutes)</Text>
+                            <SettingsNumberInput/>
+                        </Box>
+                        <Box>
+                            <Text>Display statistics</Text>
+                            <SettingsSwitch/>
+                        </Box>
+                        <Box>
+                            <Text>Display log</Text>
+                            <SettingsSwitch/>
+                        </Box>
+                        <Box>
+                            <Text>Display notifications</Text>
+                            <SettingsSwitch/>
+                        </Box>
+                        <Box>
+                            <Text>Alarm volume</Text>
+                            <SettingsSlider/>
+                        </Box>
                     </VStack>
                 </DrawerBody>
 
