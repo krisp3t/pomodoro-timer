@@ -7,6 +7,8 @@ export default function SettingsSwitch(props) {
         <Switch
             id={props.id}
             defaultChecked={props.value}
+            value={props.value}
+            onChange={props.onChange}
         />
     )
 }

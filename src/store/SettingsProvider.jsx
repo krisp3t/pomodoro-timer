@@ -22,7 +22,7 @@ const SettingsProvider = (props) => {
             isStatistics: statistics,
             isLog: log,
             isNotifications: notifications,
-            updateToggles: (obj) => {
+            updateInputs: (obj) => {
                 setStatistics(obj.isStatistics);
                 setLog(obj.isLog);
                 setNotifications(obj.isNotifications);
@@ -44,7 +44,7 @@ const SettingsProvider = (props) => {
 
     useEffect(() => {
         if (userPreferences) {
-            settingsContext.updateToggles(userPreferences);
+            settingsContext.updateInputs(userPreferences);
         }
     }, [settingsContext, userPreferences]);
 

@@ -12,5 +12,5 @@ export default function App() {
                 </VStack>
             </Container>
         </React.Fragment>
-    );
+    )
 }

@@ -17,6 +17,8 @@ export default function SettingsNumberInput(props) {
             min={props.min}
             max={props.max}
             step={1}
+            value={props.value / 60000}
+            onChange={props.onChange}
         >
             <NumberInputField/>
             <NumberInputStepper>

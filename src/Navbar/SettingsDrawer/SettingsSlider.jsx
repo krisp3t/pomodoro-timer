@@ -9,6 +9,8 @@ export default function SettingsSlider(props) {
             max={1}
             step={0.2}
             defaultValue={props.value}
+            value={props.value}
+            onChange={props.onChange}
         >
             <SliderTrack bg="gray.200">
                 <Box position="relative" right={10}/>

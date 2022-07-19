@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     Button,
     Drawer,
@@ -21,11 +21,22 @@ export default function SettingsDrawer(props) {
     const settingsCtx = useContext(SettingsContext);
     const [settingsCandidate, setSettingsCandidate] = useState(settingsCtx);
 
-    console.log(settingsCtx); // TODO: remove
+    console.log("ctx", settingsCtx); // TODO: remove
 
     function updateSettings() {
-        // TODO
+        settingsCtx.updateInputs(settingsCandidate);
     }
+
+    function onChangeCandidate(val) {
+        setSettingsCandidate({
+            ...settingsCandidate,
+            ...val
+        })
+    }
+
+    useEffect(() => {
+        setSettingsCandidate(settingsCtx)
+    }, [props.isOpen, settingsCtx])
 
     return (
         <Drawer
@@ -42,31 +53,38 @@ export default function SettingsDrawer(props) {
                     <VStack spacing={4} align="left">
                         <FormControl>
                             <FormLabel>Pomodoro length (minutes)</FormLabel>
-                            <SettingsNumberInput value={settingsCandidate.pomodoroDuration} min="5" max="120"/>
+                            <SettingsNumberInput value={settingsCandidate.pomodoroDuration} min="5" max="120"
+                                                 onChange={(val) => onChangeCandidate({pomodoroDuration: +val * 60000})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Short break length (minutes)</FormLabel>
-                            <SettingsNumberInput value={settingsCandidate.breakDuration} min="1" max="15"/>
+                            <SettingsNumberInput value={settingsCandidate.shortBreakDuration} min="1" max="15"
+                                                 onChange={(val) => onChangeCandidate({shortBreakDuration: +val * 60000})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Long break length (minutes)</FormLabel>
-                            <SettingsNumberInput value={settingsCandidate.breakDuration} min="1" max="15"/>
+                            <SettingsNumberInput value={settingsCandidate.longBreakDuration} min="1" max="60"
+                                                 onChange={(val) => onChangeCandidate({longBreakDuration: +val * 60000})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Display statistics</FormLabel>
-                            <SettingsSwitch value={settingsCandidate.isStatistics}/>
+                            <SettingsSwitch value={settingsCandidate.isStatistics}
+                                            onChange={(e) => onChangeCandidate({isStatistics: e.target.checked})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Display log</FormLabel>
-                            <SettingsSwitch value={settingsCandidate.isLog}/>
+                            <SettingsSwitch value={settingsCandidate.isLog}
+                                            onChange={(e) => onChangeCandidate({isStatistics: e.target.checked})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Display notifications</FormLabel>
-                            <SettingsSwitch value={settingsCandidate.isNotifications}/>
+                            <SettingsSwitch value={settingsCandidate.isNotifications}
+                                            onChange={(e) => onChangeCandidate({isStatistics: e.target.checked})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Alarm volume</FormLabel>
-                            <SettingsSlider value={settingsCandidate.audioVolume}/>
+                            <SettingsSlider value={settingsCandidate.audioVolume}
+                                            onChange={(val) => onChangeCandidate({audioVolume: val})}/>
                         </FormControl>
                     </VStack>
                 </DrawerBody>
