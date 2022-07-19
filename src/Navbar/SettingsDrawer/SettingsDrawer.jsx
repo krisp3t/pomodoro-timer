@@ -21,8 +21,6 @@ export default function SettingsDrawer(props) {
     const settingsCtx = useContext(SettingsContext);
     const [settingsCandidate, setSettingsCandidate] = useState(settingsCtx);
 
-    console.log("ctx", settingsCtx); // TODO: remove
-
     function updateSettings() {
         settingsCtx.updateInputs(settingsCandidate);
     }

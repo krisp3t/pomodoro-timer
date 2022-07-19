@@ -2,6 +2,7 @@ import React, {useState, useEffect, useMemo} from "react";
 
 import SettingsContext from "./settingsContext";
 
+
 const SettingsProvider = (props) => {
     const userPreferences = JSON.parse(localStorage.getItem("userPreferences"));
 
@@ -30,6 +31,7 @@ const SettingsProvider = (props) => {
                 setPomodoroDuration(obj.pomodoroDuration);
                 setShortBreakDuration(obj.shortBreakDuration);
                 setLongBreakDuration(obj.longBreakDuration);
+                localStorage.setItem("userPreferences", JSON.stringify(obj));
             },
         };
     }, [
@@ -42,9 +44,16 @@ const SettingsProvider = (props) => {
         notifications,
     ]);
 
+
     useEffect(() => {
         if (userPreferences) {
-            settingsContext.updateInputs(userPreferences);
+            // Validate localStorage JSON
+            const settingsKeys = Object.keys(settingsContext).filter(key => typeof settingsContext[key] !== "function");
+            if (settingsKeys.every((k) => userPreferences.hasOwnProperty(k))) {
+                settingsContext.updateInputs(userPreferences);
+            } else {
+                localStorage.removeItem("userPreferences");
+            }
         }
     }, [settingsContext, userPreferences]);
 
