@@ -7,6 +7,7 @@ import {
     NumberDecrementStepper
 } from "@chakra-ui/react";
 
+// TODO: change step
 
 export default function SettingsNumberInput(props) {
     return (
@@ -16,7 +17,7 @@ export default function SettingsNumberInput(props) {
             }
             min={props.min}
             max={props.max}
-            step={1}
+            step={0.1}
             value={props.value / 60000}
             onChange={props.onChange}
         >
