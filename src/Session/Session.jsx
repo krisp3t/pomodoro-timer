@@ -5,6 +5,10 @@ import Interval from "./Interval";
 import StateDisplay from "./StateDisplay";
 import SessionButtons from "./SessionButtons";
 import settingsContext from "../store/settingsContext";
+import alarmSound from "../assets/alarm.mp3"
+import tomatoLogo from "../assets/tomato.png";
+
+const alarm = new Audio(alarmSound);
 
 export const SESSION_MODES = {
     working: {
@@ -47,6 +51,18 @@ export default function Session() {
     const settingsCtx = useContext(settingsContext);
     const numBreaks = useRef(0);
 
+    function startAlarm(volume) {
+        alarm.volume = volume;
+        alarm.play();
+    }
+
+    function displayNotification(status) {
+        const text = status === SESSION_MODES.breaking.status ? "Work session completed! Good work, now take a break 😉🔥" : "Break is over - back to grinding! 💪"
+        new Notification("Pomodoro Timer", {
+            body: text,
+            icon: tomatoLogo,
+        });
+    }
 
     function reducer(state, action) {
         console.log(state, Date.now());
@@ -74,7 +90,11 @@ export default function Session() {
                 return {...SESSION_MODES.working, ...start};
             case "COMPLETED":
                 console.log("completed");
+                startAlarm(action.settingsCtx.audioVolume);
                 if (state.status === SESSION_MODES.working.status) {
+                    if (action.settingsCtx.isNotifications)
+                        displayNotification(SESSION_MODES.breaking.status);
+
                     console.log(action.numBreaks)
                     if (action.numBreaks % 3 === 0) {
                         return {...SESSION_MODES.longBreak, ...start};
@@ -82,6 +102,8 @@ export default function Session() {
                         return {...SESSION_MODES.shortBreak, ...start};
                     }
                 } else {
+                    if (action.settingsCtx.isNotifications)
+                        displayNotification(SESSION_MODES.working.status);
                     return {...SESSION_MODES.working, ...start};
                 }
             default:
@@ -100,7 +122,7 @@ export default function Session() {
                 console.log(passedTime, settingsCtx.pomodoroDuration);
                 if (passedTime >= settingsCtx.pomodoroDuration) {
                     numBreaks.current++;
-                    dispatchMode({type: "COMPLETED", numBreaks: numBreaks.current});
+                    dispatchMode({type: "COMPLETED", numBreaks: numBreaks.current, settingsCtx: settingsCtx});
                 } else {
                     setTimestamp(passedTime);
                 }
@@ -114,7 +136,7 @@ export default function Session() {
                 const remainingTime = breakTime - passedTime;
                 console.log(passedTime, remainingTime);
                 if (passedTime >= breakTime) {
-                    dispatchMode({type: "COMPLETED"});
+                    dispatchMode({type: "COMPLETED", settingsCtx: settingsCtx});
                 } else {
                     setTimestamp(remainingTime);
                 }
