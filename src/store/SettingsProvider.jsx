@@ -13,12 +13,14 @@ const SettingsProvider = (props) => {
     const [pomodoroDuration, setPomodoroDuration] = useState(1500000);
     const [shortBreakDuration, setShortBreakDuration] = useState(300000);
     const [longBreakDuration, setLongBreakDuration] = useState(1200000);
+    const [ignoreShorter, setIgnoreShorter] = useState(60000);
 
     const settingsContext = useMemo(() => {
         return {
             pomodoroDuration: pomodoroDuration,
             shortBreakDuration: shortBreakDuration,
             longBreakDuration: longBreakDuration,
+            ignoreShorter: ignoreShorter,
             audioVolume: audioVolume,
             isStatistics: statistics,
             isLog: log,
@@ -31,6 +33,7 @@ const SettingsProvider = (props) => {
                 setPomodoroDuration(obj.pomodoroDuration);
                 setShortBreakDuration(obj.shortBreakDuration);
                 setLongBreakDuration(obj.longBreakDuration);
+                setIgnoreShorter(obj.ignoreShorter)
                 localStorage.setItem("userPreferences", JSON.stringify(obj));
             },
         };
@@ -42,6 +45,7 @@ const SettingsProvider = (props) => {
         statistics,
         log,
         notifications,
+        ignoreShorter
     ]);
 
 

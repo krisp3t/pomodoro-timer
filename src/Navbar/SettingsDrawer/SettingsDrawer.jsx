@@ -36,7 +36,6 @@ export default function SettingsDrawer(props) {
         setSettingsCandidate(settingsCtx)
     }, [props.isOpen, settingsCtx])
 
-    // TODO: change min values
     return (
         <Drawer
             placement="right"
@@ -52,18 +51,23 @@ export default function SettingsDrawer(props) {
                     <VStack spacing={4} align="left">
                         <FormControl>
                             <FormLabel>Pomodoro length (minutes)</FormLabel>
-                            <SettingsNumberInput value={settingsCandidate.pomodoroDuration} min="0.1" max="120"
+                            <SettingsNumberInput value={settingsCandidate.pomodoroDuration} min="5" max="120"
                                                  onChange={(val) => onChangeCandidate({pomodoroDuration: +val * 60000})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Short break length (minutes)</FormLabel>
-                            <SettingsNumberInput value={settingsCandidate.shortBreakDuration} min="0.1" max="15"
+                            <SettingsNumberInput value={settingsCandidate.shortBreakDuration} min="1" max="15"
                                                  onChange={(val) => onChangeCandidate({shortBreakDuration: +val * 60000})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Long break length (minutes)</FormLabel>
-                            <SettingsNumberInput value={settingsCandidate.longBreakDuration} min="0.1" max="60"
+                            <SettingsNumberInput value={settingsCandidate.longBreakDuration} min="1" max="60"
                                                  onChange={(val) => onChangeCandidate({longBreakDuration: +val * 60000})}/>
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Ignore breaks shorter than (minutes)</FormLabel>
+                            <SettingsNumberInput value={settingsCandidate.ignoreShorter} min="1" max="10"
+                                                 onChange={(val) => onChangeCandidate({ignoreShorter: +val * 60000})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Display statistics</FormLabel>

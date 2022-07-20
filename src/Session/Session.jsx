@@ -96,6 +96,7 @@ export default function Session(props) {
                 return {
                     ...SESSION_MODES.paused, ...start,
                     previousState: state,
+                    ignoreShorter: action.settingsCtx.ignoreShorter
                 };
             case "RESET":
                 setTimestamp(0);

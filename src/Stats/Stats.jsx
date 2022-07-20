@@ -5,8 +5,6 @@ import StatsItem from "./StatsItem";
 import {useColorModeValue} from "@chakra-ui/react";
 
 export default function Stats(props) {
-    console.log(props);
-
     const workingLength = props.actions.work.reduce(
         (prev, currentValue) => prev + currentValue.sessionLength,
         0
@@ -20,22 +18,21 @@ export default function Stats(props) {
         0
     );
 
-// TODO: / 60000
     return (
         <Box display="flex" w="100%" py={5}>
             <StatsItem
                 label="Working"
-                number={Math.floor(workingLength)}
+                number={Math.floor(workingLength / 60000)}
                 color={useColorModeValue("green.400", "green.200")}
             />
             <StatsItem
                 label="Resting"
-                number={Math.floor(restingLength)}
+                number={Math.floor(restingLength / 60000)}
                 color={useColorModeValue("blue.400", "blue.200")}
             />
             <StatsItem
                 label="Paused"
-                number={Math.floor(pausedLength)}
+                number={Math.floor(pausedLength / 60000)}
                 color={useColorModeValue("red.400", "red.200")}
             />
         </Box>

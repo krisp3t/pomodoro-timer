@@ -23,10 +23,11 @@ export default function App() {
             case SESSION_MODES.breaking.status:
                 if (state.breaks.length > 0 && action.currentStart === state.breaks[state.breaks.length - 1].currentStart)
                     return state;
-                // TODO: ignore shorter than...
                 return {...state, breaks: [...state.breaks, action]};
             case SESSION_MODES.paused.status:
                 if (state.pauses.length > 0 && action.currentStart === state.pauses[state.pauses.length - 1].currentStart)
+                    return state;
+                if (action.sessionLength < action.ignoreShorter)
                     return state;
                 return {...state, pauses: [...state.pauses, action]};
             case "CLEAR":
