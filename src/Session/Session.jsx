@@ -15,24 +15,27 @@ export const SESSION_MODES = {
         status: "WORKING",
         originalStart: 0,
         currentStart: 0,
-        accumulated: 0
+        accumulated: 0,
+        sessionLength: 0
     },
     breaking: {
-        status: "BREAKING",
+        status: "RESTING",
     },
     shortBreak: {
-        status: "BREAKING",
+        status: "RESTING",
         length: "SHORT_BREAK",
         originalStart: 0,
         currentStart: 0,
-        accumulated: 0
+        accumulated: 0,
+        sessionLength: 0
     },
     longBreak: {
-        status: "BREAKING",
+        status: "RESTING",
         length: "LONG_BREAK",
         originalStart: 0,
         currentStart: 0,
-        accumulated: 0
+        accumulated: 0,
+        sessionLength: 0
     },
     paused: {
         status: "PAUSED",
@@ -44,12 +47,20 @@ export const SESSION_MODES = {
     }
 }
 
-export default function Session() {
+export default function Session(props) {
     const [timestamp, setTimestamp] = useState(0);
     const [sessionMode, dispatchMode] = useReducer(reducer, SESSION_MODES.initial)
     const intervalRef = useRef();
     const settingsCtx = useContext(settingsContext);
     const numBreaks = useRef(0);
+
+    let statusDisplay;
+    if (sessionMode.status === SESSION_MODES.initial.status)
+        statusDisplay = "";
+    else if (sessionMode.status === SESSION_MODES.breaking.status)
+        statusDisplay = sessionMode.length;
+    else
+        statusDisplay = sessionMode.status;
 
     function startAlarm(volume) {
         alarm.volume = volume;
@@ -65,46 +76,61 @@ export default function Session() {
     }
 
     function reducer(state, action) {
-        console.log(state, Date.now());
         const start = {originalStart: Date.now(), currentStart: Date.now()}
         switch (action.type) {
             case "START":
-                console.log("start");
-                if (state.status === SESSION_MODES.paused.status)
+                if (state.status === SESSION_MODES.paused.status) {
+                    setTimeout(() => props.addItem({
+                        ...state,
+                        sessionLength: Date.now() - state.originalStart,
+                        end: Date.now()
+                    }), 0);
                     return {
                         ...state.previousState,
                         currentStart: Date.now(),
-                        accumulated: state.originalStart - state.previousState.currentStart + state.previousState.accumulated
+                        accumulated: state.originalStart - state.previousState.currentStart + state.previousState.accumulated,
                     };
-                return {...SESSION_MODES.working, ...start};
+                }
+                return {...SESSION_MODES.working, ...start, sessionLength: action.settingsCtx.pomodoroDuration};
             case "PAUSE":
-                console.log("pause");
-                return {...SESSION_MODES.paused, ...start, previousState: state};
+                return {
+                    ...SESSION_MODES.paused, ...start,
+                    previousState: state,
+                    ignoreShorter: action.settingsCtx.ignoreShorter
+                };
             case "RESET":
-                console.log("reset");
                 setTimestamp(0);
                 return SESSION_MODES.initial;
             case "SKIP":
-                console.log("skip");
                 setTimestamp(0);
-                return {...SESSION_MODES.working, ...start};
+                setTimeout(() => props.addItem({
+                    ...state,
+                    sessionLength: Date.now() - state.originalStart,
+                    end: Date.now()
+                }, 0));
+                return {...SESSION_MODES.working, ...start, sessionLength: action.settingsCtx.pomodoroDuration};
             case "COMPLETED":
-                console.log("completed");
                 startAlarm(action.settingsCtx.audioVolume);
                 if (state.status === SESSION_MODES.working.status) {
+                    setTimeout(() => props.addItem({...state, end: Date.now()}), 0);
                     if (action.settingsCtx.isNotifications)
                         displayNotification(SESSION_MODES.breaking.status);
-
-                    console.log(action.numBreaks)
                     if (action.numBreaks % 3 === 0) {
-                        return {...SESSION_MODES.longBreak, ...start};
+                        return {
+                            ...SESSION_MODES.longBreak, ...start,
+                            sessionLength: action.settingsCtx.longBreakDuration
+                        };
                     } else {
-                        return {...SESSION_MODES.shortBreak, ...start};
+                        return {
+                            ...SESSION_MODES.shortBreak, ...start,
+                            sessionLength: action.settingsCtx.shortBreakDuration
+                        };
                     }
                 } else {
+                    setTimeout(() => props.addItem({...state, end: Date.now()}), 0);
                     if (action.settingsCtx.isNotifications)
                         displayNotification(SESSION_MODES.working.status);
-                    return {...SESSION_MODES.working, ...start};
+                    return {...SESSION_MODES.working, ...start, sessionLength: action.settingsCtx.pomodoroDuration};
                 }
             default:
                 return state;
@@ -115,11 +141,8 @@ export default function Session() {
     useEffect(() => {
         let id = intervalRef.current;
         if (SESSION_MODES.working.status === sessionMode.status) {
-            console.log("status spremenjen"); // TODO
-            setTimestamp(0);
             id = setInterval(() => {
                 const passedTime = Date.now() - sessionMode.currentStart + sessionMode.accumulated;
-                console.log(passedTime, settingsCtx.pomodoroDuration);
                 if (passedTime >= settingsCtx.pomodoroDuration) {
                     numBreaks.current++;
                     dispatchMode({type: "COMPLETED", numBreaks: numBreaks.current, settingsCtx: settingsCtx});
@@ -128,13 +151,10 @@ export default function Session() {
                 }
             }, 250);
         } else if (SESSION_MODES.breaking.status === sessionMode.status) {
-            console.log("status spremenjen");
             const breakTime = sessionMode.length === SESSION_MODES.shortBreak.length ? settingsCtx.shortBreakDuration : settingsCtx.longBreakDuration;
-            setTimestamp(breakTime);
             id = setInterval(() => {
                 const passedTime = Date.now() - sessionMode.currentStart + sessionMode.accumulated;
                 const remainingTime = breakTime - passedTime;
-                console.log(passedTime, remainingTime);
                 if (passedTime >= breakTime) {
                     dispatchMode({type: "COMPLETED", settingsCtx: settingsCtx});
                 } else {
@@ -144,7 +164,6 @@ export default function Session() {
         }
 
         return function cleanup() {
-            console.log("cleanup"); // TODO
             clearInterval(id);
         }
     }, [sessionMode, settingsCtx])
@@ -152,7 +171,7 @@ export default function Session() {
     return (
         <Box pb={10} textAlign="center">
             <Box pb={5}>
-                {sessionMode.status !== SESSION_MODES.initial.status && (<StateDisplay mode={sessionMode.status}/>)}
+                <StateDisplay mode={statusDisplay}/>
                 <Heading>
                     <Interval timestamp={timestamp}/>
                 </Heading>
