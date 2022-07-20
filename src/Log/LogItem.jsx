@@ -20,7 +20,7 @@ export default function LogItem(props) {
                 >
                     <Icon as={VscDebugStart} display="inline" mr={1}/>
                     <Text>
-                        {originalStart.getHours()}:{originalStart.getMinutes()}
+                        {originalStart.getHours().toString().padStart(2, 0)}:{originalStart.getMinutes().toString().padStart(2, 0)}
                     </Text>
                 </Badge>
                 <Badge

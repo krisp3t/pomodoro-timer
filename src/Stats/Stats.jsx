@@ -25,14 +25,17 @@ export default function Stats(props) {
             <StatsItem
                 label="Working"
                 number={Math.floor(workingLength)}
+                color="green.200"
             />
             <StatsItem
                 label="Resting"
                 number={Math.floor(restingLength)}
+                color="blue.200"
             />
             <StatsItem
                 label="Paused"
                 number={Math.floor(pausedLength)}
+                color="red.200"
             />
         </Box>
     );

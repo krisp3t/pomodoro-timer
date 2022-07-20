@@ -72,7 +72,11 @@ export default function Session(props) {
         switch (action.type) {
             case "START":
                 if (state.status === SESSION_MODES.paused.status) {
-                    setTimeout(() => props.addItem({...state, sessionLength: Date.now() - state.originalStart}), 0);
+                    setTimeout(() => props.addItem({
+                        ...state,
+                        sessionLength: Date.now() - state.originalStart,
+                        end: Date.now()
+                    }), 0);
                     return {
                         ...state.previousState,
                         currentStart: Date.now(),
@@ -90,12 +94,16 @@ export default function Session(props) {
                 return SESSION_MODES.initial;
             case "SKIP":
                 setTimestamp(0);
-                setTimeout(() => props.addItem({...state, sessionLength: Date.now() - state.originalStart}, 0));
+                setTimeout(() => props.addItem({
+                    ...state,
+                    sessionLength: Date.now() - state.originalStart,
+                    end: Date.now()
+                }, 0));
                 return {...SESSION_MODES.working, ...start, sessionLength: action.settingsCtx.pomodoroDuration};
             case "COMPLETED":
                 startAlarm(action.settingsCtx.audioVolume);
                 if (state.status === SESSION_MODES.working.status) {
-                    setTimeout(() => props.addItem(state), 0);
+                    setTimeout(() => props.addItem({...state, end: Date.now()}), 0);
                     if (action.settingsCtx.isNotifications)
                         displayNotification(SESSION_MODES.breaking.status);
                     if (action.numBreaks % 3 === 0) {
@@ -110,7 +118,7 @@ export default function Session(props) {
                         };
                     }
                 } else {
-                    setTimeout(() => props.addItem(state), 0);
+                    setTimeout(() => props.addItem({...state, end: Date.now()}), 0);
                     if (action.settingsCtx.isNotifications)
                         displayNotification(SESSION_MODES.working.status);
                     return {...SESSION_MODES.working, ...start, sessionLength: action.settingsCtx.pomodoroDuration};
