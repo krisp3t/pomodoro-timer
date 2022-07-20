@@ -20,7 +20,7 @@ export default function Log(props) {
                     Clear Log
                 </Button>
             </Box>
-            <Box display="flex" flexDirection="row" w="100%" gap={10}>
+            <Box display="flex" flexDirection={{base: "column", md: "row"}} w="100%" gap={10}>
                 <LogMode mode={SESSION_MODES.working.status} items={props.items.work} colorScheme={"green"}
                          icon={VscCheck}/>
                 <LogMode mode={SESSION_MODES.breaking.status} items={props.items.breaks} colorScheme={"blue"}

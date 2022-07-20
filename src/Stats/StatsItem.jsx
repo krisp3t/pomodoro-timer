@@ -1,7 +1,7 @@
 import React from "react";
 import {Stat, StatLabel, StatNumber, StatHelpText} from "@chakra-ui/react";
 
-const StatsItem = (props) => {
+export default function StatsItem(props) {
     return (
         <Stat textAlign="center">
             <StatLabel fontWeight={600} mb={1}>{props.label}</StatLabel>
@@ -10,5 +10,3 @@ const StatsItem = (props) => {
         </Stat>
     );
 };
-
-export default StatsItem;

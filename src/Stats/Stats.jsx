@@ -2,6 +2,7 @@ import React from "react";
 import {Box} from "@chakra-ui/layout";
 
 import StatsItem from "./StatsItem";
+import {useColorModeValue} from "@chakra-ui/react";
 
 export default function Stats(props) {
     console.log(props);
@@ -25,17 +26,17 @@ export default function Stats(props) {
             <StatsItem
                 label="Working"
                 number={Math.floor(workingLength)}
-                color="green.200"
+                color={useColorModeValue("green.400", "green.200")}
             />
             <StatsItem
                 label="Resting"
                 number={Math.floor(restingLength)}
-                color="blue.200"
+                color={useColorModeValue("blue.400", "blue.200")}
             />
             <StatsItem
                 label="Paused"
                 number={Math.floor(pausedLength)}
-                color="red.200"
+                color={useColorModeValue("red.400", "red.200")}
             />
         </Box>
     );

@@ -1,4 +1,6 @@
 export const formatTime = (input) => input.toString().padStart(2, 0);
+export const formatHours = (input) => input.getHours().toString().padStart(2, 0);
+export const formatMinutes = (input) => input.getMinutes().toString().padStart(2, 0);
 export const calculateMinSec = (timestamp) => {
     if (timestamp < 0) {
         timestamp = 0;

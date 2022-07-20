@@ -1,7 +1,7 @@
 import React from "react";
 import {Tag, useColorModeValue} from "@chakra-ui/react";
 
-const StateDisplay = (props) => {
+export default function StateDisplay(props) {
     const bg = useColorModeValue("gray.200", "gray.800");
     const capitalizeText =
         props.mode.charAt(0).toUpperCase() +
@@ -12,5 +12,3 @@ const StateDisplay = (props) => {
         </Tag>
     );
 };
-
-export default StateDisplay;
