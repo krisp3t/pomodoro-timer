@@ -56,7 +56,7 @@ export default function Session(props) {
 
     let statusDisplay;
     if (sessionMode.status === SESSION_MODES.initial.status)
-        statusDisplay = "";
+        statusDisplay = null;
     else if (sessionMode.status === SESSION_MODES.breaking.status)
         statusDisplay = sessionMode.length;
     else
@@ -171,7 +171,7 @@ export default function Session(props) {
     return (
         <Box pb={10} textAlign="center">
             <Box pb={5}>
-                <StateDisplay mode={statusDisplay}/>
+                {statusDisplay && <StateDisplay mode={statusDisplay}/>}
                 <Heading>
                     <Interval timestamp={timestamp}/>
                 </Heading>
