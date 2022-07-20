@@ -54,6 +54,14 @@ export default function Session(props) {
     const settingsCtx = useContext(settingsContext);
     const numBreaks = useRef(0);
 
+    let statusDisplay;
+    if (sessionMode.status === SESSION_MODES.initial.status)
+        statusDisplay = "";
+    else if (sessionMode.status === SESSION_MODES.breaking.status)
+        statusDisplay = sessionMode.length;
+    else
+        statusDisplay = sessionMode.status;
+
     function startAlarm(volume) {
         alarm.volume = volume;
         alarm.play();
@@ -162,7 +170,7 @@ export default function Session(props) {
     return (
         <Box pb={10} textAlign="center">
             <Box pb={5}>
-                {sessionMode.status !== SESSION_MODES.initial.status && (<StateDisplay mode={sessionMode.status}/>)}
+                <StateDisplay mode={statusDisplay}/>
                 <Heading>
                     <Interval timestamp={timestamp}/>
                 </Heading>

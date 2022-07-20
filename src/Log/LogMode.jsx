@@ -13,8 +13,7 @@ export default function LogMode(props) {
                 <h2>
                     <AccordionButton>
                         <Icon as={props.icon} display="inline" mr={2}/>
-                        <Box flex='1' textAlign='left'>
-
+                        <Box flex='1' textAlign='left' fontWeight={500}>
                             {props.mode.charAt(0) + props.mode.substring(1).toLowerCase()}
                         </Box>
                         <AccordionIcon/>
