@@ -7,6 +7,7 @@ import Session from "./Session/Session";
 import Stats from "./Stats/Stats";
 import Log from "./Log/Log";
 import settingsContext from "./store/settingsContext";
+import {SESSION_MODES} from "./Session/Session";
 
 
 export default function App() {
@@ -15,16 +16,16 @@ export default function App() {
 
     function reducer(state, action) {
         switch (action.status) {
-            case "WORKING":
+            case SESSION_MODES.working.status:
                 if (state.work.length > 0 && action.currentStart === state.work[state.work.length - 1].currentStart)
                     return state;
                 return {...state, work: [...state.work, action]};
-            case "BREAKING":
+            case SESSION_MODES.breaking.status:
                 if (state.breaks.length > 0 && action.currentStart === state.breaks[state.breaks.length - 1].currentStart)
                     return state;
                 // TODO: ignore shorter than...
                 return {...state, breaks: [...state.breaks, action]};
-            case "PAUSED":
+            case SESSION_MODES.paused.status:
                 if (state.pauses.length > 0 && action.currentStart === state.pauses[state.pauses.length - 1].currentStart)
                     return state;
                 return {...state, pauses: [...state.pauses, action]};
@@ -44,7 +45,8 @@ export default function App() {
                     <Divider borderColor="gray.200"/>
                     {settingsCtx.isStatistics && <><Stats actions={completed}/>
                         <Divider borderColor="gray.200"/></>}
-                    {settingsCtx.isLog && <Log items={completed} clear={() => dispatchCompleted({status: "CLEAR"})}/>}
+                    {settingsCtx.isLog &&
+                        <Log items={completed} clear={() => dispatchCompleted({status: "CLEAR"})}/>}
                 </VStack>
             </Container>
         </>

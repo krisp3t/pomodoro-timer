@@ -19,10 +19,10 @@ export const SESSION_MODES = {
         sessionLength: 0
     },
     breaking: {
-        status: "BREAKING",
+        status: "RESTING",
     },
     shortBreak: {
-        status: "BREAKING",
+        status: "RESTING",
         length: "SHORT_BREAK",
         originalStart: 0,
         currentStart: 0,
@@ -30,7 +30,7 @@ export const SESSION_MODES = {
         sessionLength: 0
     },
     longBreak: {
-        status: "BREAKING",
+        status: "RESTING",
         length: "LONG_BREAK",
         originalStart: 0,
         currentStart: 0,
