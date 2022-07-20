@@ -3,7 +3,7 @@ import {Box} from "@chakra-ui/layout";
 
 import StatsItem from "./StatsItem";
 
-const Stats = (props) => {
+export default function Stats(props) {
     console.log(props);
 
     const workingLength = props.actions.work.reduce(
@@ -37,5 +37,3 @@ const Stats = (props) => {
         </Box>
     );
 };
-
-export default Stats;

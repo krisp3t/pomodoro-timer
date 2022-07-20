@@ -124,7 +124,6 @@ export default function Session(props) {
     useEffect(() => {
         let id = intervalRef.current;
         if (SESSION_MODES.working.status === sessionMode.status) {
-            setTimestamp(0);
             id = setInterval(() => {
                 const passedTime = Date.now() - sessionMode.currentStart + sessionMode.accumulated;
                 if (passedTime >= settingsCtx.pomodoroDuration) {
@@ -136,7 +135,6 @@ export default function Session(props) {
             }, 250);
         } else if (SESSION_MODES.breaking.status === sessionMode.status) {
             const breakTime = sessionMode.length === SESSION_MODES.shortBreak.length ? settingsCtx.shortBreakDuration : settingsCtx.longBreakDuration;
-            setTimestamp(breakTime);
             id = setInterval(() => {
                 const passedTime = Date.now() - sessionMode.currentStart + sessionMode.accumulated;
                 const remainingTime = breakTime - passedTime;

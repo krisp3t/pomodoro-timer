@@ -73,12 +73,12 @@ export default function SettingsDrawer(props) {
                         <FormControl>
                             <FormLabel>Display log</FormLabel>
                             <SettingsSwitch value={settingsCandidate.isLog}
-                                            onChange={(e) => onChangeCandidate({isStatistics: e.target.checked})}/>
+                                            onChange={(e) => onChangeCandidate({isLog: e.target.checked})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Display notifications</FormLabel>
                             <SettingsSwitch value={settingsCandidate.isNotifications}
-                                            onChange={(e) => onChangeCandidate({isStatistics: e.target.checked})}/>
+                                            onChange={(e) => onChangeCandidate({isNotifications: e.target.checked})}/>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Alarm volume</FormLabel>
