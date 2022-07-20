@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/layout";
 
 import StatsItem from "./StatsItem";
 
-const SessionStats = (props) => {
+const Stats = (props) => {
 	const [workingLength, setWorkingLength] = useState(0);
 	const [restingLength, setRestingLength] = useState(0);
 	const [pausedLength, setPausedLength] = useState(0);
@@ -47,4 +47,4 @@ const SessionStats = (props) => {
 	);
 };
 
-export default SessionStats;
+export default Stats;
