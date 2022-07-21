@@ -20,7 +20,7 @@ Front-end is made with [Chakra UI](https://chakra-ui.com/) component library.
 
 ## Preview
 
-![Pomodoro Timer preview](https://i.ibb.co/L1mXjBw/Pomodoroscreen.png)
+![Pomodoro Timer preview](https://i.ibb.co/X8cryZt/Untitled.jpg)
 
 ## Installation
 
