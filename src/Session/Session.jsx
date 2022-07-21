@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useReducer, useRef, useState} from "react";
 import {Box, Heading} from "@chakra-ui/react";
 
-import Interval from "./Interval";
+import Interval, {timestampToOutput} from "./Interval";
 import StateDisplay from "./StateDisplay";
 import SessionButtons from "./SessionButtons";
 import settingsContext from "../store/settingsContext";
@@ -167,6 +167,10 @@ export default function Session(props) {
             clearInterval(id);
         }
     }, [sessionMode, settingsCtx])
+
+    useEffect(() => {
+        document.title = `(${timestampToOutput(timestamp)}) Pomodoro Timer`
+    }, [timestamp])
 
     return (
         <Box pb={10} textAlign="center">
